@@ -1,29 +1,87 @@
 import argparse
 import requests
-import json
 import sys
+from rich.console import Console
+from rich.table import Table
+from rich.theme import Theme
 
 # Function to get the response of the word
 
 
 def get_details(word):
+    # API URL
     API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/"
+
+    # Custom theme for display messages
+    custom_theme = Theme({
+        "info": "dim cyan",
+        "warning": "magenta",
+        "danger": "bold red"
+    })
+
+    # Initializing console object
+    console = Console(theme=custom_theme)
+
     try:
         response = requests.get(f"{API_URL}{word}", timeout=2)
         if response.status_code == 200:
-            print("Word Exists")
-            details = response.json()
+            return response.json()
         elif response.status_code == 404:
-            sys.exit("Are you sure that word exists?")
+            sys.exit(console.print(
+                "Are you sure that word exists?", style="info"))
         elif response.status_code >= 400 and response.status_code < 500:
-            sys.exit("Client error")
+            sys.exit(console.print("Client error", style="danger"))
         elif response.status_code >= 500 and response.status_code < 600:
-            sys.exit("A server error occured")
+            sys.exit(console.print("A server error occured"), style="danger")
 
     except requests.Timeout:
-        sys.exit("Error: Connection timed out.")
+        sys.exit(console.print("Error: Connection timed out."), style="danger")
     except requests.ConnectionError:
-        sys.exit("Error: A connection error occured.")
+        sys.exit(console.print(
+            "Error: A connection error occured."), style="danger")
+
+
+# Function to print the details from response
+
+
+def print_details(details):
+    # Initalizing console object
+    console = Console()
+
+    # Initalizing a table object
+    table = Table(title="Search Results", padding=1)
+
+    # Adding coloumns to the table
+    table.add_column("Part of speech", justify="left", style="cyan")
+    table.add_column("Defintion",  justify="left", style="magenta")
+    table.add_column("Example", justify="center", style="green")
+
+    word = details[0]["word"]
+    phonetic = details[0]["phonetic"]
+    phonetics = details[0]["phonetics"]
+
+    # Printing the word and phonetic
+    console.print(f"{word.title()}", style="bold", end=" ")
+    console.print(f"{[phonetic]}", style="italic")
+
+    # Adding the partofspeech, definition and example to the table
+    for i in range(len(details)):
+        meanings = details[i]["meanings"]
+        for meaning in meanings:
+            part_of_speech = meaning["partOfSpeech"]
+            definitions = meaning["definitions"]
+            # print("Part of speech : ", part_of_speech)
+            # print()
+            for definition in definitions:
+                # print("Definition : ", definition["definition"])
+                example = "__"
+                if "example" in definition:
+                    # print("Example : ", definition["example"])
+                    example = definition["example"]
+                table.add_row(part_of_speech,
+                              definition["definition"], example)
+    # Printing the table
+    console.print(table)
 
 # Main function
 
@@ -42,7 +100,10 @@ def main():
     word = args.word
 
     # Calling the get_details function
-    get_details(word)
+    details = get_details(word)
+
+    # Printing the details
+    print_details(details)
 
 
 if __name__ == "__main__":
