@@ -6,6 +6,8 @@ from rich.table import Table
 from rich.theme import Theme
 import time
 from rich.progress import Progress
+from rich import print
+from rich.panel import Panel
 
 # Function to get the response of the word
 
@@ -73,8 +75,10 @@ def print_details(details):
     phonetics = details[0]["phonetics"]
 
     # Printing the word and phonetic
-    console.print(f"{word.title()}", style="bold", end=" ")
-    console.print(f"{[phonetic]}", style="italic")
+    # console.print(f"{word.title()}", style="bold", end=" ")
+    # console.print(f"{[phonetic]}", style="italic")
+    print(Panel(f"Word : {word.title()}, Phonetic : [italic]{phonetic}",
+          title=f"Word : {word.title()}", border_style="green", style="bold"))
 
     # Adding the partofspeech, definition and example to the table
     for i in range(len(details)):
