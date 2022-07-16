@@ -107,13 +107,9 @@ def print_details(details):
         for meaning in meanings:
             part_of_speech = meaning["partOfSpeech"]
             definitions = meaning["definitions"]
-            # print("Part of speech : ", part_of_speech)
-            # print()
             for definition in definitions:
-                # print("Definition : ", definition["definition"])
                 example = "__"
                 if "example" in definition:
-                    # print("Example : ", definition["example"])
                     example = definition["example"]
                 table.add_row(part_of_speech,
                               definition["definition"], example)
@@ -218,7 +214,7 @@ def main():
 
     # Output of parsed arguments
     args = parser.parse_args()
-    # print(args)
+
     # Show the bookmarked words
     if args.bw:
         print_bookmarked_words(args.bw)
