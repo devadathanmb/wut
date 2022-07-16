@@ -4,6 +4,8 @@ import sys
 from rich.console import Console
 from rich.table import Table
 from rich.theme import Theme
+import time
+from rich.progress import Progress
 
 # Function to get the response of the word
 
@@ -23,6 +25,14 @@ def get_details(word):
     console = Console(theme=custom_theme)
 
     try:
+        # Progress bar for api request
+        with Progress(transient=True) as progress:
+            task = progress.add_task("[green]Fetching data...", total=10)
+
+            while not progress.finished:
+                progress.update(task, advance=0.9)
+                time.sleep(0.2)
+
         response = requests.get(f"{API_URL}{word}", timeout=2)
         if response.status_code == 200:
             return response.json()
@@ -57,7 +67,9 @@ def print_details(details):
     table.add_column("Example", justify="center", style="green")
 
     word = details[0]["word"]
-    phonetic = details[0]["phonetic"]
+    phonetic = ""
+    if "phonetic" in details[0]:
+        phonetic = details[0]["phonetic"]
     phonetics = details[0]["phonetics"]
 
     # Printing the word and phonetic
