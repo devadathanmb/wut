@@ -11,6 +11,8 @@ from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 import os.path
 import json
+from gtts import gTTS
+import playsound
 
 # Function to get the response of the word
 
@@ -56,6 +58,25 @@ def get_details(word):
             "Error: A connection error occured."), style="danger")
 
 
+# Function to play the pronunciation of the word
+
+def pronunce_word(word):
+    tts = gTTS(text=word, lang='en', slow=True)
+    filename = "pronunciation.mp3"
+    tts.save(filename)
+    with Progress(transient=True) as progress:
+        task = progress.add_task("[green]Playing pronunciation...", total=10)
+        while not progress.finished:
+            progress.update(task, advance=0.9)
+            time.sleep(0.2)
+    while True:
+        playsound.playsound(filename)
+        hear_again = Confirm.ask(
+            "Do you want to hear again", default=True)
+        if hear_again == False:
+            break
+    os.remove(filename)
+
 # Function to print the details from response
 
 
@@ -77,9 +98,6 @@ def print_details(details):
         phonetic = details[0]["phonetic"]
     phonetics = details[0]["phonetics"]
 
-    # Printing the word and phonetic
-    # console.print(f"{word.title()}", style="bold", end=" ")
-    # console.print(f"{[phonetic]}", style="italic")
     print(Panel(f"Word : {word.title()}, Phonetic : [italic]{phonetic}",
           title=f"Word : {word.title()}", border_style="green", style="bold"))
 
@@ -200,7 +218,7 @@ def main():
 
     # Output of parsed arguments
     args = parser.parse_args()
-    print(args)
+    # print(args)
     # Show the bookmarked words
     if args.bw:
         print_bookmarked_words(args.bw)
@@ -218,11 +236,16 @@ def main():
         # Printing the details
         word_returned = print_details(details)
 
+        # Pronunce the word
+        pronunce = Confirm.ask(
+            "Do you want the pronunciation of this word?", default=True)
+        if pronunce:
+            pronunce_word(word_returned)
+
         # Bookmark the word
         bookmark_current_word = Confirm.ask(
             "Do you want to bookmark this word?", default=True)
         if bookmark_current_word:
-            # print("yes")
             bookmark_word(details)
 
 
