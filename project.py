@@ -1,5 +1,4 @@
 import argparse
-from textwrap import indent
 import requests
 import sys
 from rich.console import Console
@@ -133,7 +132,7 @@ def bookmark_word(json_details):
                 # Append the new word details into the json list
                 json_list.append(json_details)
                 # Serialize the json list
-                json_object = json.dumps(json_details, indent=4)
+                json_object = json.dumps(json_list, indent=4)
             # Write the json object to a file
             with open(f"{path}/bookmarks.json", "w") as file:
                 file.write(json_object)
@@ -141,6 +140,42 @@ def bookmark_word(json_details):
                     f"[green]Bookmarked word to bookmarks.json file successfully.")
     except json.JSONDecodeError:
         sys.exit(print("[red]An error occured while reading the json file."))
+
+# Function to print bookmarked words
+
+
+def print_bookmarked_words(path):
+    # Exit if bookmarks.json does not exist
+    if not os.path.exists(f"{path}/bookmarks.json"):
+        sys.exit(print(f"[red]bookmarks.json does not exist in {path}"))
+    try:
+        with open(f"{path}/bookmarks.json", "r") as file:
+            word_json_list = json.load(file)
+            bookmarked_words = ""
+            for word_details in word_json_list:
+                bookmarked_words += word_details[0]["word"] + "\n"
+            print(Panel(bookmarked_words,
+                        title="Bookmarked Words", style="cyan"))
+    except json.JSONDecodeError:
+        print("[red]An error occured while parsing the bookmarks.json file")
+        sys.exit()
+
+# Function to print bookmarked words along with their details
+
+
+def print_bookmarks(path):
+    try:
+        # Exit if bookmarks.json does not exist
+        if not os.path.exists(f"{path}/bookmarks.json"):
+            sys.exit(print(f"[red]bookmarks.json does not exist in {path}"))
+        with open(f"{path}/bookmarks.json", "r") as file:
+            word_json_list = json.load(file)
+            for word_details in word_json_list:
+                print_details(word_details)
+    except json.JSONDecodeError:
+        print("[red]An error occured while parsing the bookmarks.json file")
+        sys.exit()
+
 # Main function
 
 
@@ -148,28 +183,47 @@ def main():
     # Intializing parser object
     parser = argparse.ArgumentParser(
         description="Commandline dictionary utility")
-    # Adding word positional argument to parser
-    parser.add_argument("word", default="<word>",
-                        help="Get details about the given word", metavar="word")
+
+    group = parser.add_mutually_exclusive_group()
+
+    # Adding an argument to view bookmarked words
+    group.add_argument("-bw", help="View bookmarked words only",
+                       metavar="<path to bookmarks>")
+
+    # Adding an argument to view bookmarked words along with their meanings
+    group.add_argument("-bm", help="View bookmarked words and their meanings",
+                       metavar="<path to bookmarks>")
+
+    # Adding word argument to parser
+    group.add_argument(
+        "-w", help="Get details about the given word", metavar="<word>")
+
     # Output of parsed arguments
     args = parser.parse_args()
+    print(args)
+    # Show the bookmarked words
+    if args.bw:
+        print_bookmarked_words(args.bw)
 
-    # Storing the word argument into variable word
-    word = args.word
+    # Show the bookmarked words and their meanings
+    if args.bm:
+        print_bookmarks(args.bm)
 
-    # Calling the get_details function
-    details = get_details(word)
+    # Find details about the given word
+    if args.w:
+        word = args.w
+        # Calling the get_details function
+        details = get_details(word)
 
-    # Printing the details
-    word_returned = print_details(details)
+        # Printing the details
+        word_returned = print_details(details)
 
-    # Bookmark the word
-    bookmark_current_word = Confirm.ask(
-        "Do you want to bookmark this word?", default=True)
-    assert bookmark_current_word
-    if bookmark_current_word:
-        # print("yes")
-        bookmark_word(details)
+        # Bookmark the word
+        bookmark_current_word = Confirm.ask(
+            "Do you want to bookmark this word?", default=True)
+        if bookmark_current_word:
+            # print("yes")
+            bookmark_word(details)
 
 
 if __name__ == "__main__":
