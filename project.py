@@ -13,6 +13,7 @@ import os.path
 import json
 from gtts import gTTS
 import playsound
+import eng_to_ipa as p
 
 # Global variables
 
@@ -96,10 +97,7 @@ def print_details(details):
     table.add_column("Example", justify="center", style="green")
 
     word = details[0]["word"]
-    phonetic = ""
-    if "phonetic" in details[0]:
-        phonetic = details[0]["phonetic"]
-    phonetics = details[0]["phonetics"]
+    phonetic = p.ipa_list(word)
 
     print(Panel(f"Word : {word.title()}, Phonetic : [italic]{phonetic}",
           title=f"Word : {word.title()}", border_style="green", style="bold"))
@@ -171,7 +169,7 @@ def print_bookmarked_words(path):
             word_json_list = json.load(file)
             bookmarked_words = ""
             for word_details in word_json_list:
-                bookmarked_words += word_details[0]["word"] + "\n"
+                bookmarked_words += "✳️" + word_details[0]["word"] + "\n"
             print(Panel(bookmarked_words,
                         title="Bookmarked Words", style="cyan"))
     except json.JSONDecodeError:
