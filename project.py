@@ -1,4 +1,5 @@
 import argparse
+from textwrap import indent
 import requests
 import sys
 from rich.console import Console
@@ -8,6 +9,9 @@ import time
 from rich.progress import Progress
 from rich import print
 from rich.panel import Panel
+from rich.prompt import Confirm, Prompt
+import os.path
+import json
 
 # Function to get the response of the word
 
@@ -99,6 +103,44 @@ def print_details(details):
     # Printing the table
     console.print(table)
 
+    return word
+
+# Function to bookmark the searched word for later review
+
+
+def bookmark_word(json_details):
+    # Path to the bookmarks file
+    path = Prompt.ask(
+        "[cyan]Enter the path where you want to bookmark the file : ", default=".")
+
+    try:
+        # Check if the bookmarks.json file exists
+        if not os.path.exists(f"{path}/bookmarks.json"):
+            json_list = []
+            json_list.append(json_details)
+            json_object = json.dumps(json_list, indent=4)
+
+            # Write the json object to bookmarks.json
+            with open(f"{path}/bookmarks.json", "w") as file:
+                file.write(json_object)
+                print(
+                    f"[green]Created bookmarks.json at {path} and bookmarked word successfully.")
+        # If bookmarks.json already exist
+        else:
+            # Read the file and deserialize it into a python object
+            with open(f"{path}/bookmarks.json", "r") as file:
+                json_list = json.load(file)
+                # Append the new word details into the json list
+                json_list.append(json_details)
+                # Serialize the json list
+                json_object = json.dumps(json_details, indent=4)
+            # Write the json object to a file
+            with open(f"{path}/bookmarks.json", "w") as file:
+                file.write(json_object)
+                print(
+                    f"[green]Bookmarked word to bookmarks.json file successfully.")
+    except json.JSONDecodeError:
+        sys.exit(print("[red]An error occured while reading the json file."))
 # Main function
 
 
@@ -119,7 +161,15 @@ def main():
     details = get_details(word)
 
     # Printing the details
-    print_details(details)
+    word_returned = print_details(details)
+
+    # Bookmark the word
+    bookmark_current_word = Confirm.ask(
+        "Do you want to bookmark this word?", default=True)
+    assert bookmark_current_word
+    if bookmark_current_word:
+        # print("yes")
+        bookmark_word(details)
 
 
 if __name__ == "__main__":
