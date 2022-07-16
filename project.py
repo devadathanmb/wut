@@ -14,6 +14,7 @@ import json
 from gtts import gTTS
 import playsound
 import eng_to_ipa as p
+from rich import box
 
 # Global variables
 
@@ -92,9 +93,9 @@ def print_details(details):
     table = Table(title="Search Results", padding=1)
 
     # Adding coloumns to the table
-    table.add_column("Part of speech", justify="left", style="cyan")
-    table.add_column("Defintion",  justify="left", style="magenta")
-    table.add_column("Example", justify="center", style="green")
+    table.add_column("Part of speech", justify="left", style="#FAEA48 bold")
+    table.add_column("Defintion",  justify="left", style="#66BFBF")
+    table.add_column("Example", justify="center", style="#3AB4F2")
 
     word = details[0]["word"]
     phonetic = p.ipa_list(word)
@@ -170,7 +171,7 @@ def print_bookmarked_words(path):
             bookmarked_words = ""
             for word_details in word_json_list:
                 bookmarked_words += "✳️" + word_details[0]["word"] + "\n"
-            print(Panel(bookmarked_words,
+            print(Panel(bookmarked_words, box=box.DOUBLE_EDGE,
                         title="Bookmarked Words", style="cyan"))
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
@@ -180,6 +181,7 @@ def print_bookmarked_words(path):
 
 
 def print_bookmarks(path):
+    console.rule("[bold red]Bookmarks")
     try:
         # Exit if bookmarks.json does not exist
         if not os.path.exists(f"{path}/bookmarks.json"):
@@ -189,6 +191,8 @@ def print_bookmarks(path):
             word_json_list = json.load(file)
             for word_details in word_json_list:
                 print_details(word_details)
+                console.rule(style="#6E85B7")
+
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
         sys.exit()
@@ -237,13 +241,13 @@ def main():
 
         # Pronunce the word
         pronunce = Confirm.ask(
-            "Do you want the pronunciation of this word?", default=True)
+            "[yellow]Do you want the pronunciation of this word?", default=True)
         if pronunce:
             pronunce_word(word_returned)
 
         # Bookmark the word
         bookmark_current_word = Confirm.ask(
-            "Do you want to bookmark this word?", default=True)
+            "[yellow]Do you want to bookmark this word?", default=True)
         if bookmark_current_word:
             bookmark_word(details)
 
