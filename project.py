@@ -14,22 +14,26 @@ import json
 from gtts import gTTS
 import playsound
 
+# Global variables
+
+# API URL
+API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/"
+
+# Custom theme for display messages
+custom_theme = Theme({
+    "info": "dim cyan",
+    "warning": "magenta",
+    "danger": "bold red"
+})
+
+# Initializing console object
+console = Console(theme=custom_theme)
+
+
 # Function to get the response of the word
 
 
 def get_details(word):
-    # API URL
-    API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/"
-
-    # Custom theme for display messages
-    custom_theme = Theme({
-        "info": "dim cyan",
-        "warning": "magenta",
-        "danger": "bold red"
-    })
-
-    # Initializing console object
-    console = Console(theme=custom_theme)
 
     try:
         # Progress bar for api request
@@ -64,6 +68,7 @@ def pronunce_word(word):
     tts = gTTS(text=word, lang='en', slow=True)
     filename = "pronunciation.mp3"
     tts.save(filename)
+    # Progress bar for pronunciation
     with Progress(transient=True) as progress:
         task = progress.add_task("[green]Playing pronunciation...", total=10)
         while not progress.finished:
@@ -81,8 +86,6 @@ def pronunce_word(word):
 
 
 def print_details(details):
-    # Initalizing console object
-    console = Console()
 
     # Initalizing a table object
     table = Table(title="Search Results", padding=1)
@@ -153,7 +156,8 @@ def bookmark_word(json_details):
                 print(
                     f"[green]Bookmarked word to bookmarks.json file successfully.")
     except json.JSONDecodeError:
-        sys.exit(print("[red]An error occured while reading the json file."))
+        sys.exit(
+            print("[red bold]An error occured while reading the json file."))
 
 # Function to print bookmarked words
 
@@ -161,7 +165,7 @@ def bookmark_word(json_details):
 def print_bookmarked_words(path):
     # Exit if bookmarks.json does not exist
     if not os.path.exists(f"{path}/bookmarks.json"):
-        sys.exit(print(f"[red]bookmarks.json does not exist in {path}"))
+        sys.exit(print(f"[red bold]bookmarks.json does not exist in {path}"))
     try:
         with open(f"{path}/bookmarks.json", "r") as file:
             word_json_list = json.load(file)
@@ -171,7 +175,7 @@ def print_bookmarked_words(path):
             print(Panel(bookmarked_words,
                         title="Bookmarked Words", style="cyan"))
     except json.JSONDecodeError:
-        print("[red]An error occured while parsing the bookmarks.json file")
+        print("[red bold]An error occured while parsing the bookmarks.json file")
         sys.exit()
 
 # Function to print bookmarked words along with their details
@@ -181,13 +185,14 @@ def print_bookmarks(path):
     try:
         # Exit if bookmarks.json does not exist
         if not os.path.exists(f"{path}/bookmarks.json"):
-            sys.exit(print(f"[red]bookmarks.json does not exist in {path}"))
+            sys.exit(
+                print(f"[red bold]bookmarks.json does not exist in {path}"))
         with open(f"{path}/bookmarks.json", "r") as file:
             word_json_list = json.load(file)
             for word_details in word_json_list:
                 print_details(word_details)
     except json.JSONDecodeError:
-        print("[red]An error occured while parsing the bookmarks.json file")
+        print("[red bold]An error occured while parsing the bookmarks.json file")
         sys.exit()
 
 # Main function
