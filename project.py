@@ -15,6 +15,7 @@ from gtts import gTTS
 import playsound
 import eng_to_ipa as p
 from rich import box
+from jsonschema import ValidationError, validate
 
 # Global variables
 
@@ -90,6 +91,19 @@ def pronunce_word(word):
         if hear_again == False:
             break
     os.remove(filename)
+
+
+# Function to validate json
+
+def validate_json(json_data):
+    with open("schema.json") as schema_file:
+        schema = json.load(schema_file)
+    try:
+        validate(instance=json_data, schema=schema)
+    except ValidationError:
+        print("bookmarks.json not matching schema. Did you change something?")
+        sys.exit(8)
+
 
 # Function to print the details from response
 
@@ -217,6 +231,7 @@ def print_bookmarked_words(path):
     try:
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
+            validate_json(word_json_list)
             bookmarked_words = ""
             for word_details in word_json_list:
                 bookmarked_words += "✳️" + word_details[0]["word"] + "\n"
@@ -230,7 +245,6 @@ def print_bookmarked_words(path):
 
 
 def print_bookmarks(path):
-    console.rule("[bold red]Bookmarks")
     try:
         # Exit if bookmarks.json does not exist
         if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
@@ -238,6 +252,8 @@ def print_bookmarks(path):
             sys.exit(4)
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
+            validate_json(word_json_list)
+            console.rule("[bold red]Bookmarks")
             for word_details in word_json_list:
                 print_details(word_details)
                 console.rule(style="#6E85B7")
