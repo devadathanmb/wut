@@ -130,27 +130,27 @@ def bookmark_word(json_details):
 
     try:
         # Check if the bookmarks.json file exists
-        if not os.path.exists(f"{path}/bookmarks.json"):
+        if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
             json_list = []
             json_list.append(json_details)
             json_object = json.dumps(json_list, indent=4)
 
             # Write the json object to bookmarks.json
-            with open(f"{path}/bookmarks.json", "w") as file:
+            with open(f"{os.path.join(path, 'bookmarks.json')}", "w") as file:
                 file.write(json_object)
                 print(
                     f"[green]Created bookmarks.json at {path} and bookmarked word successfully.")
         # If bookmarks.json already exist
         else:
             # Read the file and deserialize it into a python object
-            with open(f"{path}/bookmarks.json", "r") as file:
+            with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
                 json_list = json.load(file)
                 # Append the new word details into the json list
                 json_list.append(json_details)
                 # Serialize the json list
                 json_object = json.dumps(json_list, indent=4)
             # Write the json object to a file
-            with open(f"{path}/bookmarks.json", "w") as file:
+            with open(f"{os.path.join(path, 'bookmarks.json')}", "w") as file:
                 file.write(json_object)
                 print(
                     f"[green]Bookmarked word to bookmarks.json file successfully.")
@@ -163,10 +163,10 @@ def bookmark_word(json_details):
 
 def print_bookmarked_words(path):
     # Exit if bookmarks.json does not exist
-    if not os.path.exists(f"{path}/bookmarks.json"):
+    if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
         sys.exit(print(f"[red bold]bookmarks.json does not exist in {path}"))
     try:
-        with open(f"{path}/bookmarks.json", "r") as file:
+        with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
             bookmarked_words = ""
             for word_details in word_json_list:
@@ -184,10 +184,10 @@ def print_bookmarks(path):
     console.rule("[bold red]Bookmarks")
     try:
         # Exit if bookmarks.json does not exist
-        if not os.path.exists(f"{path}/bookmarks.json"):
+        if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
             sys.exit(
                 print(f"[red bold]bookmarks.json does not exist in {path}"))
-        with open(f"{path}/bookmarks.json", "r") as file:
+        with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
             for word_details in word_json_list:
                 print_details(word_details)
