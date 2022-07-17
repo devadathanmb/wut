@@ -1,0 +1,74 @@
+[
+  {
+    "word": "death",
+    "phonetic": "/diːθ/",
+    "phonetics": [
+      {
+        "text": "/diːθ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/death-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75858836",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/diːθ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/death-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014361",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/diːθ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/death-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=854598",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        
+        "definitions": [
+          {
+            "definition": "The cessation of life and all associated processes; the end of an organism's existence as an entity independent from its environment and its return to an inert, nonliving state.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The death of my grandmother saddened the whole family."
+          },
+          {
+            "definition": "(often capitalized) The personification of death as a hooded figure with a scythe; the Grim Reaper. The pronoun he is not the only option, but probably the most traditional one, as it matches with the male grammatical gender of Old English dēaþ, also with cognate German der Tod. The fourth apocalyptic rider (Bible, revelations 6:8) is male θᾰ́νᾰτος (thanatos) in Greek. It has the female name Mors in Latin, but is referred to with male forms qui and eum. The following quotes show this rider on a pale horse is his in the English Bible and she in Peter Gabriel's lyrics.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "When death walked in, a chill spread through the room."
+          },
+          {
+            "definition": "(the death) The collapse or end of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "England scored a goal at the death to even the score at one all."
+          },
+          {
+            "definition": "Spiritual lifelessness.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/death"
+    ]
+  }
+]
