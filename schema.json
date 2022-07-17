@@ -1,0 +1,45 @@
+{
+    "type": "array",
+    "items":{
+        "type" : "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "word": {
+                    "type": "string"
+                },
+                "phonetics":{
+                    "type": "array"
+                },
+                "meanings":{
+                    "type": "array",
+                    "items":{
+                        "type": "object",
+                        "properties": {
+                            "partOfSpeech":{
+                                "type": "string"
+                            },
+                            "defintions":{
+                                "type":"array"
+                            },
+                            "synonyms":{
+                                "type":"array"
+                            },
+                            "antonyms":{
+                                "type":"array"
+                            }
+                        }
+                    }
+                },
+                "license":{
+                    "type":"object"
+                },
+                "sourceUrls":{
+                    "type":"array"
+                }
+            },
+            "required" : ["word", "meanings"],
+            "additionalProperties" : true
+        }
+    }
+}
