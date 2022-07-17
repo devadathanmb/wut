@@ -1,7 +1,7 @@
-from project import get_details, print_bookmarked_words, print_bookmarks
+from project import get_details, print_bookmarked_words, print_bookmarks, validate_json
 import pytest
 import requests
-import json
+import jsonschema
 
 API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/"
 
@@ -37,7 +37,7 @@ def test_get_details():
 
 def test_print_bookmarked_words_wrong_path():
     with pytest.raises(SystemExit) as e:
-        print_bookmarked_words("/home/bookmarks.json")
+        print_bookmarked_words("/home/")
     assert e.type == SystemExit
     assert e.value.code == 4
 
@@ -46,7 +46,7 @@ def test_print_bookmarked_words_wrong_path():
 
 def test_print_bookmarked_words_invalid_json():
     with pytest.raises(SystemExit) as e:
-        print_bookmarked_words("test")
+        print_bookmarked_words("testing")
     assert e.type == SystemExit
     assert e.value.code == 5
 
@@ -55,7 +55,7 @@ def test_print_bookmarked_words_invalid_json():
 
 def test_print_bookmarks_wrong_path():
     with pytest.raises(SystemExit) as e:
-        print_bookmarks("/home/bookmarks.json")
+        print_bookmarks("/home/")
     assert e.type == SystemExit
     assert e.value.code == 4
 
@@ -64,6 +64,20 @@ def test_print_bookmarks_wrong_path():
 
 def test_print_bookmarks_invalid_json():
     with pytest.raises(SystemExit) as e:
-        print_bookmarks("test")
+        print_bookmarks("testing")
     assert e.type == SystemExit
     assert e.value.code == 5
+
+
+def test_validate_json_wrong_json():
+    with pytest.raises(SystemExit) as e:
+        validate_json("testing/invalid1.json")
+    assert e.type == SystemExit
+    assert e.value.code == 8
+
+
+def test_validate_json_missing_properties():
+    with pytest.raises(SystemExit) as e:
+        validate_json("testing/invalid2.json")
+    assert e.type == SystemExit
+    assert e.value.code == 8
