@@ -50,18 +50,25 @@ def get_details(word):
         if response.status_code == 200:
             return response.json()
         elif response.status_code == 404:
-            sys.exit(console.print(
-                "Are you sure that word exists?", style="info"))
+            console.print(
+                "Are you sure that word exists?", style="info")
+            sys.exit(1)
         elif response.status_code >= 400 and response.status_code < 500:
-            sys.exit(console.print("Client error", style="danger"))
+            console.print("Client error.", style="danger")
+            sys.exit(1)
         elif response.status_code >= 500 and response.status_code < 600:
-            sys.exit(console.print("A server error occured"), style="danger")
+            console.print(
+                "A server error occured. Try again later.", style="danger")
+            sys.exit(1)
 
     except requests.Timeout:
-        sys.exit(console.print("Error: Connection timed out."), style="danger")
+        console.print(
+            "Error: Connection timed out. Try again later.", style="danger")
+        sys.exit(1)
     except requests.ConnectionError:
-        sys.exit(console.print(
-            "Error: A connection error occured."), style="danger")
+        console.print(
+            "Error: A connection error occured.", style="danger")
+        sys.exit(1)
 
 
 # Function to play the pronunciation of the word
@@ -93,7 +100,8 @@ def print_details(details):
     table = Table(title="Search Results", padding=1)
 
     # Adding coloumns to the table
-    table.add_column("Part of speech", justify="left", style="#FAEA48 bold")
+    table.add_column("Part of speech", justify="left",
+                     style="#FAEA48 bold")
     table.add_column("Defintion",  justify="left", style="#66BFBF")
     table.add_column("Example", justify="center", style="#3AB4F2")
 
@@ -155,8 +163,8 @@ def bookmark_word(json_details):
                 print(
                     f"[green]Bookmarked word to bookmarks.json file successfully.")
     except json.JSONDecodeError:
-        sys.exit(
-            print("[red bold]An error occured while reading the json file."))
+        print("[red bold]An error occured while reading the json file.")
+        sys.exit(1)
 
 # Function to print bookmarked words
 
@@ -164,7 +172,8 @@ def bookmark_word(json_details):
 def print_bookmarked_words(path):
     # Exit if bookmarks.json does not exist
     if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
-        sys.exit(print(f"[red bold]bookmarks.json does not exist in {path}"))
+        print(f"[red bold]bookmarks.json does not exist in {path}")
+        sys.exit(1)
     try:
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
@@ -175,7 +184,7 @@ def print_bookmarked_words(path):
                         title="Bookmarked Words", style="cyan"))
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
-        sys.exit()
+        sys.exit(1)
 
 # Function to print bookmarked words along with their details
 
@@ -185,8 +194,8 @@ def print_bookmarks(path):
     try:
         # Exit if bookmarks.json does not exist
         if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
-            sys.exit(
-                print(f"[red bold]bookmarks.json does not exist in {path}"))
+            print(f"[red bold]bookmarks.json does not exist in {path}")
+            sys.exit(1)
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
             for word_details in word_json_list:
@@ -195,7 +204,7 @@ def print_bookmarks(path):
 
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
-        sys.exit()
+        sys.exit(1)
 
 # Main function
 
@@ -205,7 +214,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Commandline dictionary utility")
 
-    group = parser.add_mutually_exclusive_group()
+    group = parser.add_mutually_exclusive_group(required=True)
 
     # Adding an argument to view bookmarked words
     group.add_argument("-bw", help="View bookmarked words only",
