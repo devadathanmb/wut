@@ -96,13 +96,16 @@ def pronunce_word(word):
 # Function to validate json
 
 def validate_json(json_data):
-    with open("schema.json") as schema_file:
-        schema = json.load(schema_file)
     try:
+        with open("schema.json") as schema_file:
+            schema = json.load(schema_file)
         validate(instance=json_data, schema=schema)
     except ValidationError:
         print("bookmarks.json not matching schema. Did you change something?")
         sys.exit(8)
+    except FileNotFoundError:
+        print("Could not find schema.json file. Did you remove it?")
+        sys.exit(4)
 
 
 # Function to print the details from response
