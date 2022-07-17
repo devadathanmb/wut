@@ -1,7 +1,6 @@
 from project import get_details, print_bookmarked_words, print_bookmarks, validate_json
 import pytest
 import requests
-import jsonschema
 
 API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/"
 
