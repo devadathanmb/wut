@@ -137,6 +137,8 @@ def print_details(details):
 
     return word
 
+# Function to print the synonyms and antonyms of the word
+
 
 def print_synonyms_antonyms(synonym_antonym_list):
     # Initializing table for synonyms and antonyms
