@@ -111,11 +111,17 @@ def print_details(details):
     print(Panel(f"Word : {word.title()}, Phonetic : [italic]{phonetic}",
           title=f"Word : {word.title()}", border_style="green", style="bold"))
 
+    # List of synonym_antonym objects
+    synonym_antonym_list = []
+
     # Adding the partofspeech, definition and example to the table
     for i in range(len(details)):
         meanings = details[i]["meanings"]
         for meaning in meanings:
             part_of_speech = meaning["partOfSpeech"]
+            # Append the synonyms and antonyms to the list
+            synonym_antonym_list.append(
+                {"partOfSpeech": part_of_speech, "synonyms": meaning["synonyms"], "antonyms": meaning["antonyms"]})
             definitions = meaning["definitions"]
             for definition in definitions:
                 example = "__"
@@ -126,7 +132,34 @@ def print_details(details):
     # Printing the table
     console.print(table)
 
+    # Print synonyms and antonyms
+    print_synonyms_antonyms(synonym_antonym_list)
+
     return word
+
+
+def print_synonyms_antonyms(synonym_antonym_list):
+    # Initializing table for synonyms and antonyms
+    synonym_antonym_table = Table(title="Synonyms and antonyms", padding=1)
+
+    # Adding columns for part of speech, synonym and antonym
+    synonym_antonym_table.add_column("Part of speech", justify="left",
+                                     style="#FAEA48 bold")
+    synonym_antonym_table.add_column(
+        "Synonym",  justify="left", style="#66BFBF")
+    synonym_antonym_table.add_column(
+        "Antonym", justify="center", style="#3AB4F2")
+
+    # Adding rows for each synonym antonym
+    for synonym_antonym_dict in synonym_antonym_list:
+        part_of_speech = synonym_antonym_dict["partOfSpeech"]
+        synonyms = ", ".join(synonym_antonym_dict["synonyms"])
+        antonyms = ", ".join(synonym_antonym_dict["antonyms"])
+        synonym_antonym_table.add_row(
+            part_of_speech, (synonyms), (antonyms))
+
+    # Printing the synonym antonym table
+    console.print(synonym_antonym_table)
 
 # Function to bookmark the searched word for later review
 
