@@ -142,23 +142,28 @@ def print_details(details):
 
 def print_synonyms_antonyms(synonym_antonym_list):
     # Initializing table for synonyms and antonyms
-    synonym_antonym_table = Table(title="Synonyms and antonyms", padding=1)
+    synonym_antonym_table = Table(
+        title="Synonyms and antonyms", padding=1, box=box.ROUNDED)
 
     # Adding columns for part of speech, synonym and antonym
-    synonym_antonym_table.add_column("Part of speech", justify="left",
+    synonym_antonym_table.add_column("Part of speech", justify="center",
                                      style="#FAEA48 bold")
     synonym_antonym_table.add_column(
-        "Synonym",  justify="left", style="#66BFBF")
+        "Synonyms",  justify="center", style="#66BFBF")
     synonym_antonym_table.add_column(
-        "Antonym", justify="center", style="#3AB4F2")
+        "Antonyms", justify="center", style="#3AB4F2")
 
     # Adding rows for each synonym antonym
     for synonym_antonym_dict in synonym_antonym_list:
         part_of_speech = synonym_antonym_dict["partOfSpeech"]
         synonyms = ", ".join(synonym_antonym_dict["synonyms"])
         antonyms = ", ".join(synonym_antonym_dict["antonyms"])
+        if len(synonyms) == 0:
+            synonyms = "__"
+        if len(antonyms) == 0:
+            antonyms = "__"
         synonym_antonym_table.add_row(
-            part_of_speech, (synonyms), (antonyms))
+            part_of_speech, synonyms, antonyms)
 
     # Printing the synonym antonym table
     console.print(synonym_antonym_table)
