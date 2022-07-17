@@ -64,11 +64,11 @@ def get_details(word):
     except requests.Timeout:
         console.print(
             "Error: Connection timed out. Try again later.", style="danger")
-        sys.exit(1)
+        sys.exit(5)
     except requests.ConnectionError:
         console.print(
             "Error: A connection error occured.", style="danger")
-        sys.exit(1)
+        sys.exit(6)
 
 
 # Function to play the pronunciation of the word
