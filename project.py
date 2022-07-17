@@ -55,11 +55,11 @@ def get_details(word):
             sys.exit(1)
         elif response.status_code >= 400 and response.status_code < 500:
             console.print("Client error.", style="danger")
-            sys.exit(1)
+            sys.exit(2)
         elif response.status_code >= 500 and response.status_code < 600:
             console.print(
                 "A server error occured. Try again later.", style="danger")
-            sys.exit(1)
+            sys.exit(3)
 
     except requests.Timeout:
         console.print(
@@ -164,7 +164,7 @@ def bookmark_word(json_details):
                     f"[green]Bookmarked word to bookmarks.json file successfully.")
     except json.JSONDecodeError:
         print("[red bold]An error occured while reading the json file.")
-        sys.exit(1)
+        sys.exit(5)
 
 # Function to print bookmarked words
 
@@ -173,7 +173,7 @@ def print_bookmarked_words(path):
     # Exit if bookmarks.json does not exist
     if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
         print(f"[red bold]bookmarks.json does not exist in {path}")
-        sys.exit(1)
+        sys.exit(4)
     try:
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
@@ -184,7 +184,7 @@ def print_bookmarked_words(path):
                         title="Bookmarked Words", style="cyan"))
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
-        sys.exit(1)
+        sys.exit(5)
 
 # Function to print bookmarked words along with their details
 
@@ -195,7 +195,7 @@ def print_bookmarks(path):
         # Exit if bookmarks.json does not exist
         if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
             print(f"[red bold]bookmarks.json does not exist in {path}")
-            sys.exit(1)
+            sys.exit(4)
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
             for word_details in word_json_list:
@@ -204,7 +204,7 @@ def print_bookmarks(path):
 
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
-        sys.exit(1)
+        sys.exit(5)
 
 # Main function
 
