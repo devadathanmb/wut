@@ -1,20 +1,20 @@
 import argparse
 import requests
 import sys
-from rich.console import Console
-from rich.table import Table
-from rich.theme import Theme
+import json
 import time
+import os.path
+import playsound
+import eng_to_ipa as p
 from rich.progress import Progress
 from rich import print
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
-import os.path
-import json
-from gtts import gTTS
-import playsound
-import eng_to_ipa as p
+from rich.console import Console
+from rich.table import Table
+from rich.theme import Theme
 from rich import box
+from gtts import gTTS
 from jsonschema import ValidationError, validate
 
 # Global variables
