@@ -39,7 +39,7 @@ console = Console(theme=custom_theme)
 def get_details(word):
 
     try:
-        # Progress bar for api request
+        # Progress bar hack for api request. This has nothing to do with api request.
         with Progress(transient=True) as progress:
             task = progress.add_task("[green]Fetching data...", total=10)
 
@@ -78,7 +78,7 @@ def pronunce_word(word):
     tts = gTTS(text=word, lang='en', slow=True)
     filename = "pronunciation.mp3"
     tts.save(filename)
-    # Progress bar for pronunciation
+    # Progress bar hack for pronunciation.
     with Progress(transient=True) as progress:
         task = progress.add_task("[green]Playing pronunciation...", total=10)
         while not progress.finished:
