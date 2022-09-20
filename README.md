@@ -1,4 +1,4 @@
-# Wut?
+# Wut? 🤔
 
 #### Description:
 A CLI application written in python as a part of my CS50P final project, to find word meanings, pronunciation, synonyms, antonyms and other details quickly and easily. The project also allows users to bookmark searched words and also view bookmarked words and it's details.
