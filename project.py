@@ -317,7 +317,7 @@ def main():
     group.add_argument("-bm", help="View bookmarked words and their meanings",
                        metavar="<path to bookmarks>")
 
-    group.add_argument("-d", nargs="*", help="Delete bookmarked word",
+    group.add_argument("-d", nargs="+", help="Delete bookmarked word",
                        metavar="<word> <path to bookmarks>")
 
     # Adding word argument to parser
@@ -328,7 +328,11 @@ def main():
     args = parser.parse_args()
 
     if args.d:
-        delete_bookmarks(args.d[0], args.d[1])
+        try:
+            delete_bookmarks(args.d[0], args.d[1])
+        except IndexError:
+            print(f"[bold green]Path not provided, defaulting to {(os.getcwd())}")
+            delete_bookmarks(args.d[0], ".")
 
     # Show the bookmarked words
     if args.bw:
