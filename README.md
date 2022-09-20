@@ -1,7 +1,7 @@
 # Wut? 🤔
 
 #### Description:
-A CLI application written in python as a part of my CS50P final project, to find word meanings, pronunciation, synonyms, antonyms and other details quickly and easily. The project also allows users to bookmark searched words and also view bookmarked words and it's details.
+A CLI application written in python as a part of my CS50P final project, to find word meanings, pronunciation, synonyms, antonyms and other details quickly and easily. The project also allows users to bookmark, review and delete searched words.
 
 ---
 ## What is it?
@@ -17,7 +17,6 @@ Since it is a command line application, you just have to enter the word and let 
 ***Wut?*** uses the python [requests library](ulink) to make a get request to the [free dictionary API](https://dictionaryapi.dev/) with the given word as command line argument (enforced using [argparser](https://pypi.org/project/argparse/)) to fetch the data. The fetched data is properly formatted and then displayed on the user's terminal window using the [rich library](https://pypi.org/project/rich/) in a neat and colorful manner. *Wut?* uses [English to IPA library](https://pypi.org/project/eng-to-ipa/) to display the phonetics of the searched word. The project makes use of the [Google Text-to-Speech library](https://pypi.org/project/gTTS/) with [play sound](https://pypi.org/project/playsound/) to play the pronunciation of the searched word.  
 
  *Wut?* also provides the users an option to bookmark the searched word and also to view the bookmarked words by saving the search results to a ```bookmarks.json``` file in user's preferred directory.   
-
 *Wut?* also has error checking to ensure that the user would not jump into a screen full of errors. For ensuring that the ```bookmarks.json``` file is of correct format a ```schema.json``` file is present which validates the bookmarks file using [jsonschema library](https://pypi.org/project/jsonschema/).
 
 A number of tests to test the functions of *Wut?* is present in ```test_project.py``` file to ensure that all cases are handled properly.
