@@ -275,9 +275,9 @@ def delete_bookmarks(delete_word,  path):
             print(f"[red bold]bookmarks.json does not exist in {path}")
             sys.exit(4)
 
+        word_found = False
         with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
             word_json_list = json.load(file)
-            word_found = False
             for index, word_details in enumerate(word_json_list):
                 word = word_details[0]["word"]
                 if word == delete_word:
@@ -287,11 +287,12 @@ def delete_bookmarks(delete_word,  path):
                     word_found = True
             if not word_found:
                 print("[red]That word is not bookmarked.")
-        with open(f"{os.path.join(path, 'bookmarks.json')}", "w") as file:
-            json_object = json.dumps(word_json_list, indent=4)
-            file.write(json_object)
-            print(
-                f"[green]Modified bookmarks.json")
+        if word_found:
+            with open(f"{os.path.join(path, 'bookmarks.json')}", "w") as file:
+                json_object = json.dumps(word_json_list, indent=4)
+                file.write(json_object)
+                print(
+                    f"[green]Modified bookmarks.json")
 
     except json.JSONDecodeError:
         print("[red bold]An error occured while parsing the bookmarks.json file")
