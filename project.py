@@ -265,6 +265,39 @@ def print_bookmarks(path):
         print("[red bold]An error occured while parsing the bookmarks.json file")
         sys.exit(5)
 
+# Function to delete bookarked word
+
+
+def delete_bookmarks(delete_word,  path):
+    try:
+        # Exit if bookmarks.json does not exist
+        if not os.path.exists(f"{os.path.join(path, 'bookmarks.json')}"):
+            print(f"[red bold]bookmarks.json does not exist in {path}")
+            sys.exit(4)
+
+        with open(f"{os.path.join(path, 'bookmarks.json')}", "r") as file:
+            word_json_list = json.load(file)
+            word_found = False
+            for index, word_details in enumerate(word_json_list):
+                word = word_details[0]["word"]
+                if word == delete_word:
+                    print(f"Deleting {word}")
+                    word_json_list.pop(index)
+                    print(f"[green]Deleted word successfully")
+                    word_found = True
+            if not word_found:
+                print("[red]That word is not bookmarked.")
+        with open(f"{os.path.join(path, 'bookmarks.json')}", "w") as file:
+            json_object = json.dumps(word_json_list, indent=4)
+            file.write(json_object)
+            print(
+                f"[green]Modified bookmarks.json")
+
+    except json.JSONDecodeError:
+        print("[red bold]An error occured while parsing the bookmarks.json file")
+        sys.exit(5)
+
+
 # Main function
 
 
@@ -283,12 +316,18 @@ def main():
     group.add_argument("-bm", help="View bookmarked words and their meanings",
                        metavar="<path to bookmarks>")
 
+    group.add_argument("-d", nargs="*", help="Delete bookmarked word",
+                       metavar="<word> <path to bookmarks>")
+
     # Adding word argument to parser
     group.add_argument(
         "-w", help="Get details about the given word", metavar="<word>")
 
     # Output of parsed arguments
     args = parser.parse_args()
+
+    if args.d:
+        delete_bookmarks(args.d[0], args.d[1])
 
     # Show the bookmarked words
     if args.bw:
