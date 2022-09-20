@@ -68,11 +68,16 @@ python project.py -bm <path to bookmarks.json>
 # Example:
 python project.py -bm /home/me/wut/
 ```
-4. *And to print the usage and for help*
+4. *For deleting a bookmarked word*
+```bash
+python project.py -d <word> <path to bookmarks.json>
+# Example:
+python project.py -d sus /home/me/wut/
+```  
+5. *And to print the usage and for help*
 ```bash
 python project.py -h
 ```
-
 ---
 
 ## Known Issues
@@ -83,5 +88,4 @@ In such cases the only option is to try again later or just search for the word 
 ---
 ## Future plans
 1. The code of the program is currently pretty long and there is definitely scope of refactoring it to a certain extend.
-2. Currently users can only bookmark words they cannot remove them. In future a feature to remove bookmarked words can be introduced.
-3. ```bookmarks.json``` file can get pretty long if the number of bookmarked words are high. This can be avoided by saving it somewhere on the cloud or using a better format to save bookmarks locally. This feature also can be introduced later.
+2. ```bookmarks.json``` file can get pretty long if the number of bookmarked words are high. This can be avoided by saving it somewhere on the cloud or using a better format to save bookmarks locally. This feature also can be introduced later.
