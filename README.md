@@ -1,6 +1,7 @@
 # Wut? 🤔
 
-https://user-images.githubusercontent.com/84301852/201027714-2d0c7ce4-8ede-48cc-b78f-47f0e7f03b3e.mp4
+https://user-images.githubusercontent.com/84301852/201028904-8580cad9-ffe6-4d43-922c-aa0d780309f2.mp4
+
 
 #### Description:
 A CLI application written in python as a part of my CS50P final project, to find word meanings, pronunciation, synonyms, antonyms and other details quickly and easily. The project also allows users to bookmark, review and delete searched words.
