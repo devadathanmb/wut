@@ -4,4 +4,4 @@ test/
 bookmarks.json
 test.json
 __pycache__
-.venv/
+.venv
