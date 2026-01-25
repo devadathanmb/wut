@@ -1,13 +1,14 @@
 """Tests for CLI commands."""
 
+from datetime import datetime
+from unittest.mock import MagicMock, patch
+
 import pytest
 from click.testing import CliRunner
-from unittest.mock import Mock, patch, MagicMock
-from datetime import datetime
 
-from wut.cli import main
-from wut.core.models import Word, Bookmark
 from wut.api.dictionary import WordNotFoundError
+from wut.cli import main
+from wut.core.models import Bookmark, Word
 
 
 @pytest.fixture

@@ -1,16 +1,16 @@
 """Tests for Dictionary API client."""
 
-import pytest
 from unittest.mock import Mock, patch
 
 import httpx
+import pytest
 
 from wut.api.dictionary import (
-    DictionaryClient,
-    WordNotFoundError,
     APIConnectionError,
     APITimeoutError,
     DictionaryAPIError,
+    DictionaryClient,
+    WordNotFoundError,
     lookup_word,
 )
 

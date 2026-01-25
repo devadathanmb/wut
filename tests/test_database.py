@@ -1,17 +1,18 @@
 """Tests for database and bookmark operations."""
 
-import pytest
 import tempfile
 from datetime import datetime
 from pathlib import Path
 
+import pytest
+
+from wut.core.bookmarks import BookmarkManager
 from wut.core.database import (
-    Database,
-    BookmarkRepository,
     BookmarkExistsError,
     BookmarkNotFoundError,
+    BookmarkRepository,
+    Database,
 )
-from wut.core.bookmarks import BookmarkManager
 from wut.core.models import Bookmark, Word
 
 
@@ -67,9 +68,8 @@ class TestDatabase:
 
     def test_context_manager(self, temp_db_path: Path) -> None:
         """Test database as context manager."""
-        with Database(db_path=temp_db_path) as db:
-            with db.connection():
-                pass
+        with Database(db_path=temp_db_path) as db, db.connection():
+            pass
         # Should not raise after exiting context
 
     def test_schema_version(self, database: Database) -> None:

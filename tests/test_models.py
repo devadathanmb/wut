@@ -1,9 +1,10 @@
 """Tests for data models."""
 
-import pytest
 from datetime import datetime
 
-from wut.core.models import Definition, Meaning, Phonetic, Word, Bookmark
+import pytest
+
+from wut.core.models import Bookmark, Definition, Meaning, Phonetic, Word
 
 
 class TestPhonetic:

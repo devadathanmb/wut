@@ -14,7 +14,7 @@ from wut.api.dictionary import (
     DictionaryClient,
     WordNotFoundError,
 )
-from wut.audio.pronunciation import PronunciationPlayer, PronunciationError
+from wut.audio.pronunciation import PronunciationError, PronunciationPlayer
 from wut.core.bookmarks import (
     BookmarkExistsError,
     BookmarkManager,
@@ -186,18 +186,20 @@ def _do_lookup(ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None
     formatter.display_word(result)
 
     # Handle pronunciation
-    if pronounce:
+    if (
+        pronounce
+        or ctx.interactive
+        and Confirm.ask("\n[yellow]Play pronunciation?[/yellow]", default=False)
+    ):
         _play_pronunciation(ctx, word)
-    elif ctx.interactive:
-        if Confirm.ask("\n[yellow]Play pronunciation?[/yellow]", default=False):
-            _play_pronunciation(ctx, word)
 
     # Handle bookmarking
-    if bookmark:
+    if (
+        bookmark
+        or ctx.interactive
+        and Confirm.ask("[yellow]Bookmark this word?[/yellow]", default=False)
+    ):
         _add_bookmark(ctx, result)
-    elif ctx.interactive:
-        if Confirm.ask("[yellow]Bookmark this word?[/yellow]", default=False):
-            _add_bookmark(ctx, result)
 
 
 def _play_pronunciation(ctx: Context, word: str) -> None:
@@ -283,10 +285,7 @@ def bookmark_list(ctx: Context, limit: int, search: str | None) -> None:
     """List all bookmarked words."""
     manager = ctx.get_bookmark_manager()
 
-    if search:
-        bookmarks = manager.search(search, limit=limit)
-    else:
-        bookmarks = manager.list_all(limit=limit)
+    bookmarks = manager.search(search, limit=limit) if search else manager.list_all(limit=limit)
 
     formatter.display_bookmark_list(bookmarks)
 
@@ -323,10 +322,9 @@ def bookmark_delete(ctx: Context, word: str, force: bool) -> None:
         handle_error(f"'{word}' is not bookmarked.")
 
     # Confirm deletion
-    if not force:
-        if not Confirm.ask(f"Delete bookmark for '[cyan]{word}[/cyan]'?", default=False):
-            formatter.display_info("Cancelled.")
-            return
+    if not force and not Confirm.ask(f"Delete bookmark for '[cyan]{word}[/cyan]'?", default=False):
+        formatter.display_info("Cancelled.")
+        return
 
     manager.delete(word)
     formatter.display_success(f"Deleted bookmark for '{word}'")
@@ -350,13 +348,12 @@ def bookmark_clear(ctx: Context, force: bool) -> None:
         return
 
     # Confirm deletion
-    if not force:
-        if not Confirm.ask(
-            f"Delete all [bold]{count}[/bold] bookmark(s)?",
-            default=False,
-        ):
-            formatter.display_info("Cancelled.")
-            return
+    if not force and not Confirm.ask(
+        f"Delete all [bold]{count}[/bold] bookmark(s)?",
+        default=False,
+    ):
+        formatter.display_info("Cancelled.")
+        return
 
     deleted = manager.clear()
     formatter.display_success(f"Deleted {deleted} bookmark(s)")
@@ -409,7 +406,7 @@ def info(ctx: Context) -> None:
 # Clean up on exit
 @main.result_callback()
 @click.pass_context
-def cleanup(click_ctx: click.Context, result: object, **kwargs) -> None:
+def cleanup(click_ctx: click.Context, _result: object, **_kwargs) -> None:
     """Clean up resources after command execution."""
     ctx = click_ctx.find_object(Context)
     if ctx:

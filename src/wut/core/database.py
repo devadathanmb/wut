@@ -1,10 +1,10 @@
 """SQLite database layer for bookmark storage."""
 
 import sqlite3
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Iterator
 
 from platformdirs import user_data_dir
 

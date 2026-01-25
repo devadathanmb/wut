@@ -98,3 +98,9 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "if __name__ == .__main__.:",
 ]
+
+[dependency-groups]
+dev = [
+    "build>=1.4.0",
+    "ruff>=0.14.14",
+]

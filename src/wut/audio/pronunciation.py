@@ -1,5 +1,6 @@
 """Audio pronunciation using gTTS and system audio players."""
 
+import contextlib
 import os
 import platform
 import shutil
@@ -38,17 +39,15 @@ def _find_audio_player() -> tuple[str, list[str]]:
     system = platform.system()
 
     # Platform-specific players
-    if system == "Darwin":  # macOS
-        if shutil.which("afplay"):
-            return "afplay", []
+    if system == "Darwin" and shutil.which("afplay"):  # macOS
+        return "afplay", []
 
-    if system == "Windows":
+    if system == "Windows" and shutil.which("powershell"):
         # Use PowerShell to play audio on Windows
-        if shutil.which("powershell"):
-            return "powershell", [
-                "-c",
-                "(New-Object Media.SoundPlayer '{file}').PlaySync()",
-            ]
+        return "powershell", [
+            "-c",
+            "(New-Object Media.SoundPlayer '{file}').PlaySync()",
+        ]
 
     # Cross-platform players
     if shutil.which("ffplay"):
@@ -157,10 +156,8 @@ class PronunciationPlayer:
                 self._process.terminate()
                 self._process.wait(timeout=1)
             except Exception:
-                try:
+                with contextlib.suppress(Exception):
                     self._process.kill()
-                except Exception:
-                    pass
             finally:
                 self._process = None
         self._cleanup()
