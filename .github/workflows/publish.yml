@@ -5,7 +5,6 @@ on:
     tags:
       - "v*"
 
-  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
@@ -58,31 +57,10 @@ jobs:
           name: dist
           path: dist/
 
-  publish-testpypi:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'workflow_dispatch'
-    environment: testpypi
-
-    permissions:
-      id-token: write  # Required for trusted publishing
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-
   publish-pypi:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     environment: pypi
 
     permissions:
