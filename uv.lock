@@ -659,7 +659,7 @@ wheels = [
 ]
 
 [[package]]
-name = "wut-cli"
+name = "wut-dictionary-cli"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [

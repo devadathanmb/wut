@@ -1,32 +1,42 @@
-# Wut? 🤔
+# Wut?
 
-A modern CLI dictionary with pronunciation and bookmarking.
+Wut? is a command-line dictionary for quick word lookups, pronunciation, and bookmarks.
 
-https://user-images.githubusercontent.com/84301852/201028904-8580cad9-ffe6-4d43-922c-aa0d780309f2.mp4
+> The name came from those moments while reading where you hit a word and think: "wut?"
 
-## Features
+## What It Does
 
-- 📖 **Word Lookup** - Get definitions, synonyms, antonyms, and examples
-- 🔊 **Pronunciation** - Hear words pronounced using text-to-speech
-- 🔖 **Bookmarks** - Save words for later review
-- 🎨 **Rich Output** - Beautiful terminal formatting with colors and tables
+- Look up definitions, examples, synonyms, and antonyms
+- Play pronunciation for a word
+- Save and manage bookmarks locally
 
 ## Installation
 
-### From PyPI (coming soon)
+### From PyPI (Recommended)
 
 ```bash
-pip install wut-cli
+pipx install wut-dictionary-cli
+```
+
+Then run:
+
+```bash
+wut --help
+```
+
+If `pipx` is not installed:
+
+```bash
+python -m pip install --user pipx
+python -m pipx ensurepath
 ```
 
 ### From Source
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
-
 ```bash
 git clone https://github.com/devadathanmb/wut.git
 cd wut
-uv sync
+pipx install . --force
 ```
 
 ## Usage
@@ -34,97 +44,129 @@ uv sync
 ### Quick Lookup
 
 ```bash
-# Look up a word (simplest form)
+# Simplest form
 wut hello
 
-# Look up and play pronunciation
+# Lookup + pronunciation
 wut hello -p
 
-# Look up and bookmark
+# Lookup + bookmark
 wut hello -b
 
-# Interactive mode (prompts for pronunciation/bookmark)
+# Interactive prompts
 wut hello -i
 
-# Explicit lookup command also works
+# Explicit lookup command
 wut lookup hello -p -b
 ```
 
 ### Bookmarks
 
 ```bash
-# Add a word to bookmarks
+# Add
 wut bookmark add hello
 
-# List all bookmarks
+# List
 wut bookmark list
 
-# Search bookmarks
+# List with search
 wut bookmark list -s hel
 
-# Show bookmark details
+# Show one
 wut bookmark show hello
 
-# Delete a bookmark
+# Delete one
 wut bookmark delete hello
 
-# Clear all bookmarks
+# Clear all
 wut bookmark clear
 ```
 
 ### Pronunciation
 
 ```bash
-# Play pronunciation of a word
+# Normal speed
 wut pronounce hello
 
-# Slow pronunciation
+# Slow speed
 wut pronounce hello -s
 ```
 
 ### Info
 
 ```bash
-# Show database location and stats
+# Database path + bookmark count
 wut info
 ```
 
-## How It Works
-
-Wut uses the [Free Dictionary API](https://dictionaryapi.dev/) to fetch word definitions and metadata. Bookmarks are stored in a local SQLite database in your system's application data directory.
-
-### Tech Stack
-
-- **CLI Framework**: [Click](https://click.palletsprojects.com/)
-- **HTTP Client**: [httpx](https://www.python-httpx.org/)
-- **Terminal UI**: [Rich](https://rich.readthedocs.io/)
-- **Text-to-Speech**: [gTTS](https://gtts.readthedocs.io/)
-- **Database**: SQLite with [platformdirs](https://platformdirs.readthedocs.io/) for cross-platform paths
-
-## Known Issues
-
-Since the application uses the [Free Dictionary API](https://dictionaryapi.dev/), the output is completely dependent on the API response. The API may be missing some words or experience downtime during heavy traffic.
-
 ## Development
 
+This project uses [uv](https://docs.astral.sh/uv/) for dependency and environment management.
+
+1. Install prerequisites.
+- Python 3.11+
+- `uv`
+
 ```bash
-# Install dev dependencies
+python --version
+uv --version
+```
+
+2. Clone the repository.
+
+```bash
+git clone https://github.com/devadathanmb/wut.git
+cd wut
+```
+
+3. Create the local dev environment and install dependencies.
+
+```bash
 uv sync --extra dev
+```
 
-# Run tests
+4. Run the CLI locally.
+
+```bash
+uv run wut --help
+uv run wut hello
+```
+
+5. Run tests.
+
+```bash
 uv run pytest tests/ -v
+```
 
-# Run type checks
+6. Run lint checks.
+
+```bash
+uv run ruff check src/ tests/
+```
+
+7. Run type checks.
+
+```bash
 uv run mypy src/ tests/
 uv run --with pyright pyright
-
-# Run lint
-uv run ruff check src/ tests/
-
-# Run the CLI
-uv run wut --help
 ```
+
+8. Optional: activate `.venv` if you prefer direct commands.
+
+```bash
+source .venv/bin/activate
+pytest tests/ -v
+ruff check src/ tests/
+```
+
+## Credits
+
+- [Free Dictionary API](https://dictionaryapi.dev/) for the dictionary data used by this project.
+
+## Known Limitations
+
+Dictionary results depend on the Free Dictionary API. If a word is missing there, or the service is temporarily down, Wut? will fail to fetch results.
 
 ## License
 
-MIT
+GNU Affero General Public License v3.0 (AGPL-3.0)

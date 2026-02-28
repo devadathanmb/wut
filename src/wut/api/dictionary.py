@@ -52,7 +52,7 @@ class DictionaryClient:
         if self._client is None:
             self._client = httpx.Client(
                 timeout=self._timeout,
-                headers={"User-Agent": "wut-cli/1.0.0"},
+                headers={"User-Agent": "wut-dictionary-cli/1.0.0"},
             )
         return self._client
 
