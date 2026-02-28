@@ -1,10 +1,12 @@
-# Wut?
+# Wut? 🤔
 
-Wut? is a command-line dictionary for quick lookups, pronunciation, and personal word bookmarks.
+Wut? _(What?)_ is a command-line dictionary for quick lookups, pronunciation, and personal word bookmarks.
 
-Originally built as my CS50P final project, this repo carries a lot of my early development memories.
+Originally built as my [CS50P](https://pll.harvard.edu/course/cs50s-introduction-programming-python) final project.
 
 > The name came from those moments while reading where you hit a word and think, "wut?"
+
+https://github.com/user-attachments/assets/cd46c9b0-7d82-4541-9123-69d05b2b16e7
 
 ## Why This Exists
 
@@ -166,7 +168,7 @@ ruff check src/ tests/
 
 ## License
 
-GNU Affero General Public License v3.0 (AGPL-3.0)
+[GNU Affero General Public License v3.0 (AGPL-3.0)](./LICENSE)
 
 ## Known Limitations
 
