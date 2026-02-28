@@ -20,6 +20,7 @@ from wut.core.bookmarks import (
     BookmarkManager,
     BookmarkNotFoundError,
 )
+from wut.core.models import Word
 from wut.display.formatter import WordFormatter
 
 # Global instances
@@ -212,7 +213,7 @@ def _play_pronunciation(ctx: Context, word: str) -> None:
         formatter.display_warning(f"Could not play pronunciation: {e}")
 
 
-def _add_bookmark(ctx: Context, word_result) -> None:
+def _add_bookmark(ctx: Context, word_result: Word) -> None:
     """Add word to bookmarks."""
     manager = ctx.get_bookmark_manager()
     try:
@@ -406,7 +407,7 @@ def info(ctx: Context) -> None:
 # Clean up on exit
 @main.result_callback()
 @click.pass_context
-def cleanup(click_ctx: click.Context, _result: object, **_kwargs) -> None:
+def cleanup(click_ctx: click.Context, /, _result: object, **_kwargs: object) -> None:
     """Clean up resources after command execution."""
     ctx = click_ctx.find_object(Context)
     if ctx:

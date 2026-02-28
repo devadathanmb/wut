@@ -1,8 +1,9 @@
 """Domain models for dictionary data."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Self
+from typing import Any, Self
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,7 +15,7 @@ class Phonetic:
     source_url: str | None = None
 
     @classmethod
-    def from_api_response(cls, data: dict[str, str | None]) -> Self:
+    def from_api_response(cls, data: Mapping[str, str | None]) -> Self:
         """Create Phonetic from API response dict."""
         return cls(
             text=data.get("text") or "",
@@ -33,7 +34,7 @@ class Definition:
     antonyms: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: dict) -> Self:
+    def from_api_response(cls, data: Mapping[str, Any]) -> Self:
         """Create Definition from API response dict."""
         return cls(
             text=data.get("definition", ""),
@@ -53,7 +54,7 @@ class Meaning:
     antonyms: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: dict) -> Self:
+    def from_api_response(cls, data: Mapping[str, Any]) -> Self:
         """Create Meaning from API response dict."""
         definitions = tuple(Definition.from_api_response(d) for d in data.get("definitions", []))
         return cls(
@@ -90,7 +91,7 @@ class Word:
     source_urls: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: list[dict]) -> Self:
+    def from_api_response(cls, data: list[dict[str, Any]]) -> Self:
         """Create Word from API response (list of entries)."""
         if not data:
             raise ValueError("Empty API response")
@@ -143,7 +144,7 @@ class Word:
     @property
     def all_synonyms(self) -> tuple[str, ...]:
         """Get all synonyms from all meanings."""
-        synonyms = set()
+        synonyms: set[str] = set()
         for meaning in self.meanings:
             synonyms.update(meaning.all_synonyms)
         return tuple(sorted(synonyms))
@@ -151,7 +152,7 @@ class Word:
     @property
     def all_antonyms(self) -> tuple[str, ...]:
         """Get all antonyms from all meanings."""
-        antonyms = set()
+        antonyms: set[str] = set()
         for meaning in self.meanings:
             antonyms.update(meaning.all_antonyms)
         return tuple(sorted(antonyms))

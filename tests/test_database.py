@@ -1,6 +1,7 @@
 """Tests for database and bookmark operations."""
 
 import tempfile
+from collections.abc import Generator
 from datetime import datetime
 from pathlib import Path
 
@@ -24,7 +25,7 @@ def temp_db_path() -> Path:
 
 
 @pytest.fixture
-def database(temp_db_path: Path) -> Database:
+def database(temp_db_path: Path) -> Generator[Database, None, None]:
     """Create a test database."""
     db = Database(db_path=temp_db_path)
     yield db
@@ -257,7 +258,7 @@ class TestBookmarkManager:
     """Tests for BookmarkManager class."""
 
     @pytest.fixture
-    def manager(self, temp_db_path: Path) -> BookmarkManager:
+    def manager(self, temp_db_path: Path) -> Generator[BookmarkManager, None, None]:
         """Create a test manager."""
         mgr = BookmarkManager(db_path=temp_db_path)
         yield mgr

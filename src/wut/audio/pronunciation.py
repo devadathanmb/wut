@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from gtts import gTTS
+from gtts import gTTS  # type: ignore[import-untyped]
 
 
 class PronunciationError(Exception):
@@ -81,7 +81,7 @@ class PronunciationPlayer:
         self._lang = lang
         self._slow = slow
         self._temp_file: Path | None = None
-        self._process: subprocess.Popen | None = None
+        self._process: subprocess.Popen[bytes] | None = None
 
     @property
     def is_playing(self) -> bool:

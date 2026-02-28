@@ -16,7 +16,7 @@ from wut.api.dictionary import (
 
 
 @pytest.fixture
-def sample_api_response() -> list[dict]:
+def sample_api_response() -> list[dict[str, object]]:
     """Sample API response."""
     return [
         {
@@ -45,7 +45,7 @@ def sample_api_response() -> list[dict]:
 class TestDictionaryClient:
     """Tests for DictionaryClient class."""
 
-    def test_lookup_success(self, sample_api_response: list[dict]) -> None:
+    def test_lookup_success(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test successful word lookup."""
         with patch.object(httpx.Client, "get") as mock_get:
             mock_response = Mock()
@@ -87,7 +87,9 @@ class TestDictionaryClient:
 
         client.close()
 
-    def test_lookup_strips_and_lowercases(self, sample_api_response: list[dict]) -> None:
+    def test_lookup_strips_and_lowercases(
+        self, sample_api_response: list[dict[str, object]]
+    ) -> None:
         """Test that word is stripped and lowercased."""
         with patch.object(httpx.Client, "get") as mock_get:
             mock_response = Mock()
@@ -143,7 +145,7 @@ class TestDictionaryClient:
 
             client.close()
 
-    def test_context_manager(self, sample_api_response: list[dict]) -> None:
+    def test_context_manager(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test client as context manager."""
         with patch.object(httpx.Client, "get") as mock_get:
             mock_response = Mock()
@@ -159,7 +161,7 @@ class TestDictionaryClient:
 class TestLookupWordFunction:
     """Tests for lookup_word convenience function."""
 
-    def test_lookup_word(self, sample_api_response: list[dict]) -> None:
+    def test_lookup_word(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test the convenience function."""
         with patch.object(httpx.Client, "get") as mock_get:
             mock_response = Mock()

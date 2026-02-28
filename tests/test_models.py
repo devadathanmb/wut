@@ -112,7 +112,7 @@ class TestWord:
     """Tests for Word model."""
 
     @pytest.fixture
-    def sample_api_response(self) -> list[dict]:
+    def sample_api_response(self) -> list[dict[str, object]]:
         """Sample API response for testing."""
         return [
             {
@@ -151,7 +151,7 @@ class TestWord:
             }
         ]
 
-    def test_from_api_response(self, sample_api_response: list[dict]) -> None:
+    def test_from_api_response(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test creating Word from API response."""
         word = Word.from_api_response(sample_api_response)
 
@@ -160,17 +160,17 @@ class TestWord:
         assert len(word.meanings) == 2
         assert word.source_urls == ("https://en.wiktionary.org/wiki/hello",)
 
-    def test_ipa_property(self, sample_api_response: list[dict]) -> None:
+    def test_ipa_property(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test IPA property."""
         word = Word.from_api_response(sample_api_response)
         assert word.ipa == "/həˈloʊ/"
 
-    def test_audio_url_property(self, sample_api_response: list[dict]) -> None:
+    def test_audio_url_property(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test audio URL property."""
         word = Word.from_api_response(sample_api_response)
         assert word.audio_url == "https://example.com/hello.mp3"
 
-    def test_all_synonyms(self, sample_api_response: list[dict]) -> None:
+    def test_all_synonyms(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test aggregating all synonyms."""
         word = Word.from_api_response(sample_api_response)
         all_syns = word.all_synonyms
@@ -178,7 +178,7 @@ class TestWord:
         assert "hi" in all_syns
         assert "hey" in all_syns
 
-    def test_all_antonyms(self, sample_api_response: list[dict]) -> None:
+    def test_all_antonyms(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test aggregating all antonyms."""
         word = Word.from_api_response(sample_api_response)
         all_ants = word.all_antonyms
