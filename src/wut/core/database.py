@@ -39,7 +39,7 @@ class DatabaseError(Exception):
 class BookmarkNotFoundError(DatabaseError):
     """Raised when a bookmark is not found."""
 
-    def __init__(self, word: str) -> None:
+    def __init__(self, *, word: str) -> None:
         self.word = word
         super().__init__(f"Bookmark not found: '{word}'")
 
@@ -47,7 +47,7 @@ class BookmarkNotFoundError(DatabaseError):
 class BookmarkExistsError(DatabaseError):
     """Raised when trying to add a bookmark that already exists."""
 
-    def __init__(self, word: str) -> None:
+    def __init__(self, *, word: str) -> None:
         self.word = word
         super().__init__(f"Bookmark already exists: '{word}'")
 

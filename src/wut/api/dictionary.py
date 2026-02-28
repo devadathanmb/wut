@@ -16,7 +16,7 @@ class DictionaryAPIError(Exception):
 class WordNotFoundError(DictionaryAPIError):
     """Raised when a word is not found in the dictionary."""
 
-    def __init__(self, word: str) -> None:
+    def __init__(self, *, word: str) -> None:
         self.word = word
         super().__init__(f"Word not found: '{word}'")
 
