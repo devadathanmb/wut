@@ -68,7 +68,7 @@ class Context:
 pass_context = click.make_pass_decorator(Context, ensure=True)
 
 
-def handle_error(message: str, *, exit_code: int = 1) -> NoReturn:
+def handle_error(*, message: str, exit_code: int = 1) -> NoReturn:
     """Display error and exit."""
     formatter.display_error(message=message)
     sys.exit(exit_code)
@@ -151,6 +151,7 @@ def main(ctx: click.Context) -> None:
 @pass_context
 def lookup(
     ctx: Context,
+    *,
     word: str,
     pronounce: bool,
     do_bookmark: bool,
@@ -242,7 +243,7 @@ def bookmark() -> None:
 @bookmark.command("add")
 @click.argument("word")
 @pass_context
-def bookmark_add(ctx: Context, word: str) -> None:
+def bookmark_add(ctx: Context, *, word: str) -> None:
     """Add a word to bookmarks.
 
     Looks up the word and saves it to your bookmarks.
@@ -282,7 +283,7 @@ def bookmark_add(ctx: Context, word: str) -> None:
     metavar="QUERY",
 )
 @pass_context
-def bookmark_list(ctx: Context, limit: int, search: str | None) -> None:
+def bookmark_list(ctx: Context, *, limit: int, search: str | None) -> None:
     """List all bookmarked words."""
     manager = ctx.get_bookmark_manager()
 
@@ -296,7 +297,7 @@ def bookmark_list(ctx: Context, limit: int, search: str | None) -> None:
 @bookmark.command("show")
 @click.argument("word")
 @pass_context
-def bookmark_show(ctx: Context, word: str) -> None:
+def bookmark_show(ctx: Context, *, word: str) -> None:
     """Show details of a bookmarked word."""
     manager = ctx.get_bookmark_manager()
 
@@ -316,7 +317,7 @@ def bookmark_show(ctx: Context, word: str) -> None:
     help="Skip confirmation prompt",
 )
 @pass_context
-def bookmark_delete(ctx: Context, word: str, force: bool) -> None:
+def bookmark_delete(ctx: Context, *, word: str, force: bool) -> None:
     """Delete a bookmarked word."""
     manager = ctx.get_bookmark_manager()
 
@@ -343,7 +344,7 @@ def bookmark_delete(ctx: Context, word: str, force: bool) -> None:
     help="Skip confirmation prompt",
 )
 @pass_context
-def bookmark_clear(ctx: Context, force: bool) -> None:
+def bookmark_clear(ctx: Context, *, force: bool) -> None:
     """Delete all bookmarks."""
     manager = ctx.get_bookmark_manager()
     count = manager.count()
@@ -373,7 +374,7 @@ def bookmark_clear(ctx: Context, force: bool) -> None:
     help="Use slow pronunciation",
 )
 @pass_context
-def pronounce(ctx: Context, word: str, slow: bool) -> None:
+def pronounce(ctx: Context, *, word: str, slow: bool) -> None:
     """Play pronunciation of a word.
 
     Uses text-to-speech to pronounce the word.

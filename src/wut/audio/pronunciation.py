@@ -90,7 +90,7 @@ class PronunciationPlayer:
             return False
         return self._process.poll() is None
 
-    def play(self, word: str, *, block: bool = True) -> None:
+    def play(self, *, word: str, block: bool = True) -> None:
         """Play pronunciation of a word.
 
         Args:
@@ -191,7 +191,7 @@ class PronunciationPlayer:
 
 
 # Convenience function for one-off pronunciation
-def pronounce_word(word: str, *, lang: str = "en", slow: bool = False) -> None:
+def pronounce_word(*, word: str, lang: str = "en", slow: bool = False) -> None:
     """Play pronunciation of a word.
 
     Args:

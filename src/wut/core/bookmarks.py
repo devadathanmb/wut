@@ -94,7 +94,7 @@ class BookmarkManager:
         """
         return self._repo.list_all(limit=limit, offset=offset)
 
-    def search(self, query: str, *, limit: int = 20) -> list[Bookmark]:
+    def search(self, *, query: str, limit: int = 20) -> list[Bookmark]:
         """Search bookmarks.
 
         Args:

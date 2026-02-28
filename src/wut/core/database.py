@@ -267,7 +267,7 @@ class BookmarkRepository:
             )
             return [self._row_to_bookmark(row=row) for row in cursor.fetchall()]
 
-    def search(self, query: str, *, limit: int = 20) -> list[Bookmark]:
+    def search(self, *, query: str, limit: int = 20) -> list[Bookmark]:
         """Search bookmarks by word.
 
         Args:

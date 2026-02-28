@@ -120,7 +120,7 @@ class DictionaryClient:
 
 
 # Convenience function for one-off lookups
-def lookup_word(word: str, *, timeout: float = DEFAULT_TIMEOUT) -> Word:
+def lookup_word(*, word: str, timeout: float = DEFAULT_TIMEOUT) -> Word:
     """Look up a word in the dictionary.
 
     Args:
