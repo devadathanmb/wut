@@ -404,7 +404,7 @@ def info(ctx: Context) -> None:
 
     console.print(f"\n[bold cyan]Wut CLI[/bold cyan] v{__version__}")
     console.print()
-    console.print(f"[bold]Database:[/bold] {manager.db_path}")
+    console.print(f"[bold]Database:[/bold] '{manager.db_path}'")
     console.print(f"[bold]Bookmarks:[/bold] {manager.count()}")
     console.print()
 
