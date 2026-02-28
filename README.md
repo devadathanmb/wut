@@ -2,7 +2,7 @@
 
 Wut? _(What?)_ is a command-line dictionary for quick lookups, pronunciation, and personal word bookmarks.
 
-Originally built as my [CS50P](https://pll.harvard.edu/course/cs50s-introduction-programming-python) final project.
+Originally built as my [CS50P](https://pll.harvard.edu/course/cs50s-introduction-programming-python) final project, now completely re-written from scratch.
 
 > The name came from those moments while reading where you hit a word and think, "wut?"
 
