@@ -1,8 +1,9 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
   # Allow manual trigger
   workflow_dispatch:
@@ -84,7 +85,7 @@ jobs:
   publish-pypi:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'release'
+    if: github.event_name == 'push'
     environment: pypi
 
     permissions:
