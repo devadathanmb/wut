@@ -179,7 +179,7 @@ class BookmarkRepository:
                 bookmark.id = cursor.lastrowid
                 return bookmark
             except sqlite3.IntegrityError as e:
-                raise BookmarkExistsError(bookmark.word) from e
+                raise BookmarkExistsError(word=bookmark.word) from e
 
     def get(self, word: str) -> Bookmark:
         """Get a bookmark by word.
@@ -200,8 +200,8 @@ class BookmarkRepository:
             )
             row = cursor.fetchone()
             if row is None:
-                raise BookmarkNotFoundError(word)
-            return self._row_to_bookmark(row)
+                raise BookmarkNotFoundError(word=word)
+            return self._row_to_bookmark(row=row)
 
     def get_by_id(self, bookmark_id: int) -> Bookmark:
         """Get a bookmark by ID.
@@ -222,8 +222,8 @@ class BookmarkRepository:
             )
             row = cursor.fetchone()
             if row is None:
-                raise BookmarkNotFoundError(f"ID: {bookmark_id}")
-            return self._row_to_bookmark(row)
+                raise BookmarkNotFoundError(word=f"ID: {bookmark_id}")
+            return self._row_to_bookmark(row=row)
 
     def exists(self, word: str) -> bool:
         """Check if a bookmark exists.
@@ -265,7 +265,7 @@ class BookmarkRepository:
                 """,
                 (limit, offset),
             )
-            return [self._row_to_bookmark(row) for row in cursor.fetchall()]
+            return [self._row_to_bookmark(row=row) for row in cursor.fetchall()]
 
     def search(self, query: str, *, limit: int = 20) -> list[Bookmark]:
         """Search bookmarks by word.
@@ -287,7 +287,7 @@ class BookmarkRepository:
                 """,
                 (f"{query}%", limit),
             )
-            return [self._row_to_bookmark(row) for row in cursor.fetchall()]
+            return [self._row_to_bookmark(row=row) for row in cursor.fetchall()]
 
     def delete(self, word: str) -> bool:
         """Delete a bookmark by word.

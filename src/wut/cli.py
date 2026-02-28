@@ -25,7 +25,7 @@ from wut.display.formatter import WordFormatter
 
 # Global instances
 console = Console()
-formatter = WordFormatter(console)
+formatter = WordFormatter(console=console)
 
 
 class Context:
@@ -85,19 +85,19 @@ class DefaultCommandGroup(click.Group):
         """Parse args, treating unknown first arg as word to look up."""
         # If no args, let normal processing handle it (shows help)
         if not args:
-            return super().parse_args(ctx, args)
+            return super().parse_args(ctx=ctx, args=args)
 
         # Check if first arg looks like an option (starts with -)
         if args[0].startswith("-"):
-            return super().parse_args(ctx, args)
+            return super().parse_args(ctx=ctx, args=args)
 
         # Check if first arg is a known subcommand
         if args[0] in self.commands:
-            return super().parse_args(ctx, args)
+            return super().parse_args(ctx=ctx, args=args)
 
         # First arg is not a subcommand - treat as word lookup
         # Insert 'lookup' command before the word
-        return super().parse_args(ctx, ["lookup"] + args)
+        return super().parse_args(ctx=ctx, args=["lookup"] + args)
 
 
 @click.group(
@@ -124,7 +124,7 @@ def main(ctx: click.Context) -> None:
 
     # Show help if no command given
     if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
+        click.echo(message=ctx.get_help())
 
 
 @main.command()
@@ -166,7 +166,7 @@ def lookup(
         wut hello -i           # Interactive mode (prompts)
     """
     ctx.interactive = interactive
-    _do_lookup(ctx, word, pronounce, do_bookmark)
+    _do_lookup(ctx=ctx, word=word, pronounce=pronounce, bookmark=do_bookmark)
 
 
 def _do_lookup(ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None:
@@ -174,53 +174,53 @@ def _do_lookup(ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None
     client = ctx.get_dictionary_client()
 
     try:
-        with console.status(f"Looking up '{word}'..."):
-            result = client.lookup(word)
+        with console.status(status=f"Looking up '{word}'..."):
+            result = client.lookup(word=word)
     except WordNotFoundError:
-        handle_error(f"Word '{word}' not found in dictionary.")
+        handle_error(message=f"Word '{word}' not found in dictionary.")
     except APITimeoutError:
-        handle_error("Connection timed out. Please try again.")
+        handle_error(message="Connection timed out. Please try again.")
     except APIConnectionError:
-        handle_error("Could not connect to dictionary. Check your internet connection.")
+        handle_error(message="Could not connect to dictionary. Check your internet connection.")
 
     # Display results
-    formatter.display_word(result)
+    formatter.display_word(word=result)
 
     # Handle pronunciation
     if (
         pronounce
         or ctx.interactive
-        and Confirm.ask("\n[yellow]Play pronunciation?[/yellow]", default=False)
+        and Confirm.ask(prompt="\n[yellow]Play pronunciation?[/yellow]", default=False)
     ):
-        _play_pronunciation(ctx, word)
+        _play_pronunciation(ctx=ctx, word=word)
 
     # Handle bookmarking
     if (
         bookmark
         or ctx.interactive
-        and Confirm.ask("[yellow]Bookmark this word?[/yellow]", default=False)
+        and Confirm.ask(prompt="[yellow]Bookmark this word?[/yellow]", default=False)
     ):
-        _add_bookmark(ctx, result)
+        _add_bookmark(ctx=ctx, word_result=result)
 
 
 def _play_pronunciation(ctx: Context, word: str) -> None:
     """Play word pronunciation."""
     player = ctx.get_pronunciation_player()
     try:
-        with console.status("Playing pronunciation..."):
-            player.play(word, block=True)
+        with console.status(status="Playing pronunciation..."):
+            player.play(word=word, block=True)
     except PronunciationError as e:
-        formatter.display_warning(f"Could not play pronunciation: {e}")
+        formatter.display_warning(message=f"Could not play pronunciation: {e}")
 
 
 def _add_bookmark(ctx: Context, word_result: Word) -> None:
     """Add word to bookmarks."""
     manager = ctx.get_bookmark_manager()
     try:
-        manager.add_word(word_result)
-        formatter.display_success(f"Bookmarked '{word_result.word}'")
+        manager.add_word(word=word_result)
+        formatter.display_success(message=f"Bookmarked '{word_result.word}'")
     except BookmarkExistsError:
-        formatter.display_warning(f"'{word_result.word}' is already bookmarked.")
+        formatter.display_warning(message=f"'{word_result.word}' is already bookmarked.")
 
 
 # Bookmark command group
@@ -252,19 +252,19 @@ def bookmark_add(ctx: Context, word: str) -> None:
 
     # First look up the word
     try:
-        with console.status(f"Looking up '{word}'..."):
-            result = client.lookup(word)
+        with console.status(status=f"Looking up '{word}'..."):
+            result = client.lookup(word=word)
     except WordNotFoundError:
-        handle_error(f"Word '{word}' not found in dictionary.")
+        handle_error(message=f"Word '{word}' not found in dictionary.")
     except (APITimeoutError, APIConnectionError) as e:
-        handle_error(str(e))
+        handle_error(message=str(e))
 
     # Add to bookmarks
     try:
-        manager.add_word(result)
-        formatter.display_success(f"Bookmarked '{word}'")
+        manager.add_word(word=result)
+        formatter.display_success(message=f"Bookmarked '{word}'")
     except BookmarkExistsError:
-        formatter.display_warning(f"'{word}' is already bookmarked.")
+        formatter.display_warning(message=f"'{word}' is already bookmarked.")
 
 
 @bookmark.command("list")
@@ -286,9 +286,11 @@ def bookmark_list(ctx: Context, limit: int, search: str | None) -> None:
     """List all bookmarked words."""
     manager = ctx.get_bookmark_manager()
 
-    bookmarks = manager.search(search, limit=limit) if search else manager.list_all(limit=limit)
+    bookmarks = (
+        manager.search(query=search, limit=limit) if search else manager.list_all(limit=limit)
+    )
 
-    formatter.display_bookmark_list(bookmarks)
+    formatter.display_bookmark_list(bookmarks=bookmarks)
 
 
 @bookmark.command("show")
@@ -299,10 +301,10 @@ def bookmark_show(ctx: Context, word: str) -> None:
     manager = ctx.get_bookmark_manager()
 
     try:
-        bm = manager.get(word)
-        formatter.display_bookmark(bm)
+        bm = manager.get(word=word)
+        formatter.display_bookmark(bookmark=bm)
     except BookmarkNotFoundError:
-        handle_error(f"'{word}' is not bookmarked.")
+        handle_error(message=f"'{word}' is not bookmarked.")
 
 
 @bookmark.command("delete")
@@ -319,16 +321,18 @@ def bookmark_delete(ctx: Context, word: str, force: bool) -> None:
     manager = ctx.get_bookmark_manager()
 
     # Check if exists
-    if not manager.exists(word):
-        handle_error(f"'{word}' is not bookmarked.")
+    if not manager.exists(word=word):
+        handle_error(message=f"'{word}' is not bookmarked.")
 
     # Confirm deletion
-    if not force and not Confirm.ask(f"Delete bookmark for '[cyan]{word}[/cyan]'?", default=False):
-        formatter.display_info("Cancelled.")
+    if not force and not Confirm.ask(
+        prompt=f"Delete bookmark for '[cyan]{word}[/cyan]'?", default=False
+    ):
+        formatter.display_info(message="Cancelled.")
         return
 
-    manager.delete(word)
-    formatter.display_success(f"Deleted bookmark for '{word}'")
+    manager.delete(word=word)
+    formatter.display_success(message=f"Deleted bookmark for '{word}'")
 
 
 @bookmark.command("clear")
@@ -345,19 +349,19 @@ def bookmark_clear(ctx: Context, force: bool) -> None:
     count = manager.count()
 
     if count == 0:
-        formatter.display_info("No bookmarks to delete.")
+        formatter.display_info(message="No bookmarks to delete.")
         return
 
     # Confirm deletion
     if not force and not Confirm.ask(
-        f"Delete all [bold]{count}[/bold] bookmark(s)?",
+        prompt=f"Delete all [bold]{count}[/bold] bookmark(s)?",
         default=False,
     ):
-        formatter.display_info("Cancelled.")
+        formatter.display_info(message="Cancelled.")
         return
 
     deleted = manager.clear()
-    formatter.display_success(f"Deleted {deleted} bookmark(s)")
+    formatter.display_success(message=f"Deleted {deleted} bookmark(s)")
 
 
 @main.command()
@@ -378,15 +382,15 @@ def pronounce(ctx: Context, word: str, slow: bool) -> None:
 
     try:
         console.print(f"[dim]Playing pronunciation for '[cyan]{word}[/cyan]'...[/dim]")
-        player.play(word, block=True)
+        player.play(word=word, block=True)
 
         # Ask to repeat only in interactive mode
         if ctx.interactive:
-            while Confirm.ask("Play again?", default=False):
-                player.play(word, block=True)
+            while Confirm.ask(prompt="Play again?", default=False):
+                player.play(word=word, block=True)
 
     except PronunciationError as e:
-        handle_error(f"Could not play pronunciation: {e}")
+        handle_error(message=f"Could not play pronunciation: {e}")
     finally:
         player.close()
 
@@ -409,7 +413,7 @@ def info(ctx: Context) -> None:
 @click.pass_context
 def cleanup(click_ctx: click.Context, /, _result: object, **_kwargs: object) -> None:
     """Clean up resources after command execution."""
-    ctx = click_ctx.find_object(Context)
+    ctx = click_ctx.find_object(object_type=Context)
     if ctx:
         ctx.cleanup()
 

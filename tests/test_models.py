@@ -17,7 +17,7 @@ class TestPhonetic:
             "audio": "https://example.com/audio.mp3",
             "sourceUrl": "https://example.com",
         }
-        phonetic = Phonetic.from_api_response(data)
+        phonetic = Phonetic.from_api_response(data=data)
 
         assert phonetic.text == "/həˈloʊ/"
         assert phonetic.audio_url == "https://example.com/audio.mp3"
@@ -26,7 +26,7 @@ class TestPhonetic:
     def test_from_api_response_missing_fields(self) -> None:
         """Test creating Phonetic with missing optional fields."""
         data: dict[str, str | None] = {"text": "/test/"}
-        phonetic = Phonetic.from_api_response(data)
+        phonetic = Phonetic.from_api_response(data=data)
 
         assert phonetic.text == "/test/"
         assert phonetic.audio_url is None
@@ -34,7 +34,7 @@ class TestPhonetic:
 
     def test_from_api_response_empty(self) -> None:
         """Test creating Phonetic from empty dict."""
-        phonetic = Phonetic.from_api_response({})
+        phonetic = Phonetic.from_api_response(data={})
         assert phonetic.text == ""
 
 
@@ -49,7 +49,7 @@ class TestDefinition:
             "synonyms": ["hi", "hey"],
             "antonyms": ["goodbye"],
         }
-        definition = Definition.from_api_response(data)
+        definition = Definition.from_api_response(data=data)
 
         assert definition.text == "A greeting"
         assert definition.example == "Hello, world!"
@@ -59,7 +59,7 @@ class TestDefinition:
     def test_from_api_response_minimal(self) -> None:
         """Test creating Definition with only required fields."""
         data = {"definition": "Test definition"}
-        definition = Definition.from_api_response(data)
+        definition = Definition.from_api_response(data=data)
 
         assert definition.text == "Test definition"
         assert definition.example is None
@@ -81,7 +81,7 @@ class TestMeaning:
             "synonyms": ["global_syn"],
             "antonyms": ["global_ant"],
         }
-        meaning = Meaning.from_api_response(data)
+        meaning = Meaning.from_api_response(data=data)
 
         assert meaning.part_of_speech == "noun"
         assert len(meaning.definitions) == 2
@@ -99,7 +99,7 @@ class TestMeaning:
             "synonyms": ["global_syn"],
             "antonyms": [],
         }
-        meaning = Meaning.from_api_response(data)
+        meaning = Meaning.from_api_response(data=data)
 
         all_syns = meaning.all_synonyms
         assert "syn1" in all_syns
@@ -153,7 +153,7 @@ class TestWord:
 
     def test_from_api_response(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test creating Word from API response."""
-        word = Word.from_api_response(sample_api_response)
+        word = Word.from_api_response(data=sample_api_response)
 
         assert word.word == "hello"
         assert len(word.phonetics) == 1
@@ -162,17 +162,17 @@ class TestWord:
 
     def test_ipa_property(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test IPA property."""
-        word = Word.from_api_response(sample_api_response)
+        word = Word.from_api_response(data=sample_api_response)
         assert word.ipa == "/həˈloʊ/"
 
     def test_audio_url_property(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test audio URL property."""
-        word = Word.from_api_response(sample_api_response)
+        word = Word.from_api_response(data=sample_api_response)
         assert word.audio_url == "https://example.com/hello.mp3"
 
     def test_all_synonyms(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test aggregating all synonyms."""
-        word = Word.from_api_response(sample_api_response)
+        word = Word.from_api_response(data=sample_api_response)
         all_syns = word.all_synonyms
         assert "greeting" in all_syns
         assert "hi" in all_syns
@@ -180,7 +180,7 @@ class TestWord:
 
     def test_all_antonyms(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test aggregating all antonyms."""
-        word = Word.from_api_response(sample_api_response)
+        word = Word.from_api_response(data=sample_api_response)
         all_ants = word.all_antonyms
         assert "goodbye" in all_ants
         assert "bye" in all_ants
@@ -188,7 +188,7 @@ class TestWord:
     def test_from_empty_response_raises(self) -> None:
         """Test that empty response raises ValueError."""
         with pytest.raises(ValueError, match="Empty API response"):
-            Word.from_api_response([])
+            Word.from_api_response(data=[])
 
 
 class TestBookmark:
@@ -198,7 +198,7 @@ class TestBookmark:
     def sample_word(self) -> Word:
         """Create a sample Word for testing."""
         return Word.from_api_response(
-            [
+            data=[
                 {
                     "word": "test",
                     "phonetics": [{"text": "/test/"}],
@@ -224,7 +224,7 @@ class TestBookmark:
 
     def test_from_word(self, sample_word: Word) -> None:
         """Test creating Bookmark from Word."""
-        bookmark = Bookmark.from_word(sample_word)
+        bookmark = Bookmark.from_word(word=sample_word)
 
         assert bookmark.word == "test"
         assert bookmark.definition == "A procedure"

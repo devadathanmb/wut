@@ -21,7 +21,7 @@ def runner() -> CliRunner:
 def sample_word() -> Word:
     """Create a sample Word for testing."""
     return Word.from_api_response(
-        [
+        data=[
             {
                 "word": "hello",
                 "phonetics": [{"text": "/həˈloʊ/"}],
@@ -105,7 +105,7 @@ class TestWordLookup:
         """Test lookup of non-existent word."""
         with patch("wut.cli.DictionaryClient") as MockClient:
             mock_client = MagicMock()
-            mock_client.lookup.side_effect = WordNotFoundError("xyzabc")
+            mock_client.lookup.side_effect = WordNotFoundError(word="xyzabc")
             MockClient.return_value = mock_client
 
             result = runner.invoke(main, ["xyzabc"])

@@ -50,7 +50,7 @@ def test_play_success_blocking() -> None:
         patch("wut.audio.pronunciation._find_audio_player", return_value=("ffplay", ["-nodisp"])),
         patch("wut.audio.pronunciation.subprocess.Popen", return_value=mock_process),
     ):
-        player.play("hello", block=True)
+        player.play(word="hello", block=True)
 
     mock_gtts.assert_called_once_with(text="hello", lang="en", slow=False)
     mock_tts.save.assert_called_once()
@@ -66,7 +66,7 @@ def test_play_tts_failure() -> None:
         patch("wut.audio.pronunciation.gTTS", side_effect=RuntimeError("boom")),
         pytest.raises(TTSError, match="Failed to generate pronunciation"),
     ):
-        player.play("hello", block=True)
+        player.play(word="hello", block=True)
 
     assert player._temp_file is None
 
@@ -82,7 +82,7 @@ def test_playback_failure_cleans_up() -> None:
         patch("wut.audio.pronunciation.subprocess.Popen", side_effect=OSError("spawn failed")),
         pytest.raises(PlaybackError, match="Failed to play audio"),
     ):
-        player.play("hello", block=True)
+        player.play(word="hello", block=True)
 
     assert player._temp_file is None
     assert player._process is None
@@ -102,7 +102,7 @@ def test_windows_template_player_replaces_path() -> None:
         ),
         patch("wut.audio.pronunciation.subprocess.Popen", return_value=mock_process) as mock_popen,
     ):
-        player.play("hello", block=False)
+        player.play(word="hello", block=False)
 
     cmd = mock_popen.call_args.args[0]
     assert cmd[0] == "powershell"

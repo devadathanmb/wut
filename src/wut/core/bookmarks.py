@@ -21,7 +21,7 @@ class BookmarkManager:
             db_path: Optional custom database path.
         """
         self._db = Database(db_path=db_path)
-        self._repo = BookmarkRepository(self._db)
+        self._repo = BookmarkRepository(database=self._db)
 
     @property
     def db_path(self) -> Path:
@@ -40,8 +40,8 @@ class BookmarkManager:
         Raises:
             BookmarkExistsError: If word is already bookmarked.
         """
-        bookmark = Bookmark.from_word(word)
-        return self._repo.add(bookmark)
+        bookmark = Bookmark.from_word(word=word)
+        return self._repo.add(bookmark=bookmark)
 
     def add_bookmark(self, bookmark: Bookmark) -> Bookmark:
         """Add a bookmark directly.
@@ -55,7 +55,7 @@ class BookmarkManager:
         Raises:
             BookmarkExistsError: If bookmark already exists.
         """
-        return self._repo.add(bookmark)
+        return self._repo.add(bookmark=bookmark)
 
     def get(self, word: str) -> Bookmark:
         """Get a bookmark by word.
@@ -69,7 +69,7 @@ class BookmarkManager:
         Raises:
             BookmarkNotFoundError: If bookmark not found.
         """
-        return self._repo.get(word)
+        return self._repo.get(word=word)
 
     def exists(self, word: str) -> bool:
         """Check if a word is bookmarked.
@@ -80,7 +80,7 @@ class BookmarkManager:
         Returns:
             True if bookmarked.
         """
-        return self._repo.exists(word)
+        return self._repo.exists(word=word)
 
     def list_all(self, *, limit: int = 50, offset: int = 0) -> list[Bookmark]:
         """List all bookmarks.
@@ -104,7 +104,7 @@ class BookmarkManager:
         Returns:
             Matching bookmarks.
         """
-        return self._repo.search(query, limit=limit)
+        return self._repo.search(query=query, limit=limit)
 
     def delete(self, word: str) -> bool:
         """Delete a bookmark.
@@ -115,7 +115,7 @@ class BookmarkManager:
         Returns:
             True if deleted.
         """
-        return self._repo.delete(word)
+        return self._repo.delete(word=word)
 
     def count(self) -> int:
         """Get total bookmark count.

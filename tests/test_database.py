@@ -36,7 +36,7 @@ def database(temp_db_path: Path) -> Generator[Database, None, None]:
 @pytest.fixture
 def repository(database: Database) -> BookmarkRepository:
     """Create a test repository."""
-    return BookmarkRepository(database)
+    return BookmarkRepository(database=database)
 
 
 @pytest.fixture
@@ -86,7 +86,7 @@ class TestBookmarkRepository:
 
     def test_add_bookmark(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test adding a bookmark."""
-        result = repository.add(sample_bookmark)
+        result = repository.add(bookmark=sample_bookmark)
 
         assert result.id is not None
         assert result.word == "hello"
@@ -95,18 +95,18 @@ class TestBookmarkRepository:
         self, repository: BookmarkRepository, sample_bookmark: Bookmark
     ) -> None:
         """Test that adding duplicate raises error."""
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
 
         with pytest.raises(BookmarkExistsError) as exc_info:
-            repository.add(sample_bookmark)
+            repository.add(bookmark=sample_bookmark)
 
         assert exc_info.value.word == "hello"
 
     def test_get_bookmark(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test retrieving a bookmark."""
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
 
-        result = repository.get("hello")
+        result = repository.get(word="hello")
 
         assert result.word == "hello"
         assert result.definition == "A greeting"
@@ -116,31 +116,31 @@ class TestBookmarkRepository:
         self, repository: BookmarkRepository, sample_bookmark: Bookmark
     ) -> None:
         """Test that get is case insensitive."""
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
 
-        result = repository.get("HELLO")
+        result = repository.get(word="HELLO")
         assert result.word == "hello"
 
     def test_get_not_found_raises(self, repository: BookmarkRepository) -> None:
         """Test that getting non-existent bookmark raises error."""
         with pytest.raises(BookmarkNotFoundError) as exc_info:
-            repository.get("nonexistent")
+            repository.get(word="nonexistent")
 
         assert exc_info.value.word == "nonexistent"
 
     def test_exists(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test checking if bookmark exists."""
-        assert not repository.exists("hello")
+        assert not repository.exists(word="hello")
 
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
 
-        assert repository.exists("hello")
-        assert repository.exists("HELLO")  # Case insensitive
+        assert repository.exists(word="hello")
+        assert repository.exists(word="HELLO")  # Case insensitive
 
     def test_list_all(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test listing all bookmarks."""
         # Add multiple bookmarks
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
 
         bookmark2 = Bookmark(
             id=None,
@@ -154,7 +154,7 @@ class TestBookmarkRepository:
             added_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        repository.add(bookmark2)
+        repository.add(bookmark=bookmark2)
 
         results = repository.list_all()
 
@@ -175,7 +175,7 @@ class TestBookmarkRepository:
                 added_at=datetime.now(),
                 updated_at=datetime.now(),
             )
-            repository.add(bookmark)
+            repository.add(bookmark=bookmark)
 
         results = repository.list_all(limit=3)
         assert len(results) == 3
@@ -196,9 +196,9 @@ class TestBookmarkRepository:
                 added_at=datetime.now(),
                 updated_at=datetime.now(),
             )
-            repository.add(bookmark)
+            repository.add(bookmark=bookmark)
 
-        results = repository.search("app")
+        results = repository.search(query="app")
 
         assert len(results) == 3
         words_found = [r.word for r in results]
@@ -209,24 +209,24 @@ class TestBookmarkRepository:
 
     def test_delete(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test deleting a bookmark."""
-        repository.add(sample_bookmark)
-        assert repository.exists("hello")
+        repository.add(bookmark=sample_bookmark)
+        assert repository.exists(word="hello")
 
-        result = repository.delete("hello")
+        result = repository.delete(word="hello")
 
         assert result is True
-        assert not repository.exists("hello")
+        assert not repository.exists(word="hello")
 
     def test_delete_not_found(self, repository: BookmarkRepository) -> None:
         """Test deleting non-existent bookmark."""
-        result = repository.delete("nonexistent")
+        result = repository.delete(word="nonexistent")
         assert result is False
 
     def test_count(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test counting bookmarks."""
         assert repository.count() == 0
 
-        repository.add(sample_bookmark)
+        repository.add(bookmark=sample_bookmark)
         assert repository.count() == 1
 
     def test_clear(self, repository: BookmarkRepository) -> None:
@@ -244,7 +244,7 @@ class TestBookmarkRepository:
                 added_at=datetime.now(),
                 updated_at=datetime.now(),
             )
-            repository.add(bookmark)
+            repository.add(bookmark=bookmark)
 
         assert repository.count() == 3
 
@@ -269,7 +269,7 @@ class TestBookmarkManager:
     def sample_word(self) -> Word:
         """Create a sample Word for testing."""
         return Word.from_api_response(
-            [
+            data=[
                 {
                     "word": "test",
                     "phonetics": [{"text": "/test/"}],

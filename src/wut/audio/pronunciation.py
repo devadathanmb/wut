@@ -200,7 +200,7 @@ def pronounce_word(word: str, *, lang: str = "en", slow: bool = False) -> None:
         slow: Whether to use slow pronunciation.
     """
     with PronunciationPlayer(lang=lang, slow=slow) as player:
-        player.play(word, block=True)
+        player.play(word=word, block=True)
 
 
 def is_audio_available() -> bool:

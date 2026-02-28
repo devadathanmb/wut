@@ -79,7 +79,7 @@ class DictionaryClient:
         url = f"{self._base_url}/{word}"
 
         try:
-            response = client.get(url)
+            response = client.get(url=url)
         except httpx.TimeoutException as e:
             raise APITimeoutError(f"Request timed out: {e}") from e
         except httpx.ConnectError as e:
@@ -88,14 +88,14 @@ class DictionaryClient:
             raise DictionaryAPIError(f"HTTP error: {e}") from e
 
         if response.status_code == 404:
-            raise WordNotFoundError(word)
+            raise WordNotFoundError(word=word)
 
         if response.status_code >= 400:
             raise DictionaryAPIError(f"API error: {response.status_code} - {response.text}")
 
         try:
             data = response.json()
-            return Word.from_api_response(data)
+            return Word.from_api_response(data=data)
         except (ValueError, KeyError) as e:
             raise DictionaryAPIError(f"Failed to parse API response: {e}") from e
 

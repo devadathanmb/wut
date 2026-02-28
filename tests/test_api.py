@@ -54,7 +54,7 @@ class TestDictionaryClient:
             mock_get.return_value = mock_response
 
             client = DictionaryClient()
-            result = client.lookup("hello")
+            result = client.lookup(word="hello")
 
             assert result.word == "hello"
             assert len(result.meanings) == 1
@@ -70,7 +70,7 @@ class TestDictionaryClient:
             client = DictionaryClient()
 
             with pytest.raises(WordNotFoundError) as exc_info:
-                client.lookup("xyznonexistent")
+                client.lookup(word="xyznonexistent")
 
             assert exc_info.value.word == "xyznonexistent"
             client.close()
@@ -80,10 +80,10 @@ class TestDictionaryClient:
         client = DictionaryClient()
 
         with pytest.raises(ValueError, match="Word cannot be empty"):
-            client.lookup("")
+            client.lookup(word="")
 
         with pytest.raises(ValueError, match="Word cannot be empty"):
-            client.lookup("   ")
+            client.lookup(word="   ")
 
         client.close()
 
@@ -98,11 +98,11 @@ class TestDictionaryClient:
             mock_get.return_value = mock_response
 
             client = DictionaryClient()
-            client.lookup("  HELLO  ")
+            client.lookup(word="  HELLO  ")
 
             # Check that the URL was called with lowercase
             mock_get.assert_called_once()
-            call_url = mock_get.call_args[0][0]
+            call_url = mock_get.call_args.kwargs["url"]
             assert "hello" in call_url
             client.close()
 
@@ -114,7 +114,7 @@ class TestDictionaryClient:
             client = DictionaryClient()
 
             with pytest.raises(APITimeoutError):
-                client.lookup("hello")
+                client.lookup(word="hello")
 
             client.close()
 
@@ -126,7 +126,7 @@ class TestDictionaryClient:
             client = DictionaryClient()
 
             with pytest.raises(APIConnectionError):
-                client.lookup("hello")
+                client.lookup(word="hello")
 
             client.close()
 
@@ -141,7 +141,7 @@ class TestDictionaryClient:
             client = DictionaryClient()
 
             with pytest.raises(DictionaryAPIError):
-                client.lookup("hello")
+                client.lookup(word="hello")
 
             client.close()
 
@@ -154,7 +154,7 @@ class TestDictionaryClient:
             mock_get.return_value = mock_response
 
             with DictionaryClient() as client:
-                result = client.lookup("hello")
+                result = client.lookup(word="hello")
                 assert result.word == "hello"
 
 
@@ -169,6 +169,6 @@ class TestLookupWordFunction:
             mock_response.json.return_value = sample_api_response
             mock_get.return_value = mock_response
 
-            result = lookup_word("hello")
+            result = lookup_word(word="hello")
 
             assert result.word == "hello"

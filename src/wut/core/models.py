@@ -56,7 +56,9 @@ class Meaning:
     @classmethod
     def from_api_response(cls, data: Mapping[str, Any]) -> Self:
         """Create Meaning from API response dict."""
-        definitions = tuple(Definition.from_api_response(d) for d in data.get("definitions", []))
+        definitions = tuple(
+            Definition.from_api_response(data=d) for d in data.get("definitions", [])
+        )
         return cls(
             part_of_speech=data.get("partOfSpeech", ""),
             definitions=definitions,
@@ -105,13 +107,13 @@ class Word:
         for entry in data:
             for phonetic_data in entry.get("phonetics", []):
                 if phonetic_data.get("text"):
-                    phonetics.append(Phonetic.from_api_response(phonetic_data))
+                    phonetics.append(Phonetic.from_api_response(data=phonetic_data))
 
         # Collect all meanings
         meanings: list[Meaning] = []
         for entry in data:
             for meaning_data in entry.get("meanings", []):
-                meanings.append(Meaning.from_api_response(meaning_data))
+                meanings.append(Meaning.from_api_response(data=meaning_data))
 
         # Collect source URLs
         source_urls: list[str] = []
