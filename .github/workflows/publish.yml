@@ -1,0 +1,101 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Run mypy
+        run: uv run mypy src/ tests/
+
+      - name: Run pyright
+        run: uv run --with pyright pyright
+
+      - name: Run tests
+        run: uv run pytest tests/ -v
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install build dependencies
+        run: uv pip install build
+
+      - name: Build package
+        run: uv run python -m build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'workflow_dispatch'
+    environment: testpypi
+
+    permissions:
+      id-token: write  # Required for trusted publishing
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release'
+    environment: pypi
+
+    permissions:
+      id-token: write  # Required for trusted publishing
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
