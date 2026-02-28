@@ -68,7 +68,7 @@ class Context:
 pass_context = click.make_pass_decorator(Context, ensure=True)
 
 
-def handle_error(message: str, exit_code: int = 1) -> NoReturn:
+def handle_error(message: str, *, exit_code: int = 1) -> NoReturn:
     """Display error and exit."""
     formatter.display_error(message=message)
     sys.exit(exit_code)
@@ -169,7 +169,7 @@ def lookup(
     _do_lookup(ctx=ctx, word=word, pronounce=pronounce, bookmark=do_bookmark)
 
 
-def _do_lookup(ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None:
+def _do_lookup(*, ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None:
     """Perform word lookup with optional pronunciation and bookmarking."""
     client = ctx.get_dictionary_client()
 
@@ -203,7 +203,7 @@ def _do_lookup(ctx: Context, word: str, pronounce: bool, bookmark: bool) -> None
         _add_bookmark(ctx=ctx, word_result=result)
 
 
-def _play_pronunciation(ctx: Context, word: str) -> None:
+def _play_pronunciation(*, ctx: Context, word: str) -> None:
     """Play word pronunciation."""
     player = ctx.get_pronunciation_player()
     try:
@@ -213,7 +213,7 @@ def _play_pronunciation(ctx: Context, word: str) -> None:
         formatter.display_warning(message=f"Could not play pronunciation: {e}")
 
 
-def _add_bookmark(ctx: Context, word_result: Word) -> None:
+def _add_bookmark(*, ctx: Context, word_result: Word) -> None:
     """Add word to bookmarks."""
     manager = ctx.get_bookmark_manager()
     try:

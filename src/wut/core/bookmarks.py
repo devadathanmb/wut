@@ -14,7 +14,7 @@ from wut.core.models import Bookmark, Word
 class BookmarkManager:
     """High-level manager for bookmark operations."""
 
-    def __init__(self, db_path: Path | None = None) -> None:
+    def __init__(self, *, db_path: Path | None = None) -> None:
         """Initialize bookmark manager.
 
         Args:
@@ -28,7 +28,7 @@ class BookmarkManager:
         """Get the database file path."""
         return self._db.db_path
 
-    def add_word(self, word: Word) -> Bookmark:
+    def add_word(self, *, word: Word) -> Bookmark:
         """Add a word to bookmarks.
 
         Args:
@@ -43,7 +43,7 @@ class BookmarkManager:
         bookmark = Bookmark.from_word(word=word)
         return self._repo.add(bookmark=bookmark)
 
-    def add_bookmark(self, bookmark: Bookmark) -> Bookmark:
+    def add_bookmark(self, *, bookmark: Bookmark) -> Bookmark:
         """Add a bookmark directly.
 
         Args:
@@ -57,7 +57,7 @@ class BookmarkManager:
         """
         return self._repo.add(bookmark=bookmark)
 
-    def get(self, word: str) -> Bookmark:
+    def get(self, *, word: str) -> Bookmark:
         """Get a bookmark by word.
 
         Args:
@@ -71,7 +71,7 @@ class BookmarkManager:
         """
         return self._repo.get(word=word)
 
-    def exists(self, word: str) -> bool:
+    def exists(self, *, word: str) -> bool:
         """Check if a word is bookmarked.
 
         Args:
@@ -106,7 +106,7 @@ class BookmarkManager:
         """
         return self._repo.search(query=query, limit=limit)
 
-    def delete(self, word: str) -> bool:
+    def delete(self, *, word: str) -> bool:
         """Delete a bookmark.
 
         Args:

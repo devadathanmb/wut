@@ -55,7 +55,7 @@ class BookmarkExistsError(DatabaseError):
 class Database:
     """SQLite database connection manager."""
 
-    def __init__(self, db_path: Path | None = None) -> None:
+    def __init__(self, *, db_path: Path | None = None) -> None:
         """Initialize database with optional custom path.
 
         Args:
@@ -134,7 +134,7 @@ class Database:
 class BookmarkRepository:
     """Repository for bookmark CRUD operations."""
 
-    def __init__(self, database: Database) -> None:
+    def __init__(self, *, database: Database) -> None:
         """Initialize repository with database.
 
         Args:
@@ -142,7 +142,7 @@ class BookmarkRepository:
         """
         self._db = database
 
-    def add(self, bookmark: Bookmark) -> Bookmark:
+    def add(self, *, bookmark: Bookmark) -> Bookmark:
         """Add a new bookmark.
 
         Args:
@@ -181,7 +181,7 @@ class BookmarkRepository:
             except sqlite3.IntegrityError as e:
                 raise BookmarkExistsError(word=bookmark.word) from e
 
-    def get(self, word: str) -> Bookmark:
+    def get(self, *, word: str) -> Bookmark:
         """Get a bookmark by word.
 
         Args:
@@ -203,7 +203,7 @@ class BookmarkRepository:
                 raise BookmarkNotFoundError(word=word)
             return self._row_to_bookmark(row=row)
 
-    def get_by_id(self, bookmark_id: int) -> Bookmark:
+    def get_by_id(self, *, bookmark_id: int) -> Bookmark:
         """Get a bookmark by ID.
 
         Args:
@@ -225,7 +225,7 @@ class BookmarkRepository:
                 raise BookmarkNotFoundError(word=f"ID: {bookmark_id}")
             return self._row_to_bookmark(row=row)
 
-    def exists(self, word: str) -> bool:
+    def exists(self, *, word: str) -> bool:
         """Check if a bookmark exists.
 
         Args:
@@ -289,7 +289,7 @@ class BookmarkRepository:
             )
             return [self._row_to_bookmark(row=row) for row in cursor.fetchall()]
 
-    def delete(self, word: str) -> bool:
+    def delete(self, *, word: str) -> bool:
         """Delete a bookmark by word.
 
         Args:
@@ -329,7 +329,7 @@ class BookmarkRepository:
             return cursor.rowcount
 
     @staticmethod
-    def _row_to_bookmark(row: sqlite3.Row) -> Bookmark:
+    def _row_to_bookmark(*, row: sqlite3.Row) -> Bookmark:
         """Convert database row to Bookmark model."""
         return Bookmark(
             id=row["id"],

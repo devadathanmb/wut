@@ -12,7 +12,7 @@ from wut.core.models import Bookmark, Meaning, Word
 class WordFormatter:
     """Formatter for displaying dictionary data using Rich."""
 
-    def __init__(self, console: Console | None = None) -> None:
+    def __init__(self, *, console: Console | None = None) -> None:
         """Initialize formatter with optional console.
 
         Args:
@@ -25,7 +25,7 @@ class WordFormatter:
         """Get the console instance."""
         return self._console
 
-    def display_word(self, word: Word) -> None:
+    def display_word(self, *, word: Word) -> None:
         """Display a word with all its meanings.
 
         Args:
@@ -67,14 +67,14 @@ class WordFormatter:
         # Synonyms and antonyms
         self._display_synonyms_antonyms(word=word)
 
-    def _add_meaning_rows(self, table: Table, meaning: Meaning) -> None:
+    def _add_meaning_rows(self, *, table: Table, meaning: Meaning) -> None:
         """Add rows for a meaning to the table."""
         for i, definition in enumerate(meaning.definitions):
             pos = meaning.part_of_speech if i == 0 else ""
             example = definition.example or "—"
             table.add_row(pos, definition.text, example)
 
-    def _display_synonyms_antonyms(self, word: Word) -> None:
+    def _display_synonyms_antonyms(self, *, word: Word) -> None:
         """Display synonyms and antonyms table."""
         synonyms = word.all_synonyms
         antonyms = word.all_antonyms
@@ -104,7 +104,7 @@ class WordFormatter:
         table.add_row(syn_text, ant_text)
         self._console.print(table)
 
-    def display_bookmark(self, bookmark: Bookmark) -> None:
+    def display_bookmark(self, *, bookmark: Bookmark) -> None:
         """Display a single bookmark.
 
         Args:
@@ -148,8 +148,8 @@ class WordFormatter:
 
     def display_bookmark_list(
         self,
-        bookmarks: list[Bookmark],
         *,
+        bookmarks: list[Bookmark],
         show_count: bool = True,
     ) -> None:
         """Display a list of bookmarks as a table.
@@ -193,7 +193,7 @@ class WordFormatter:
         if show_count:
             self._console.print(f"\n[dim]Total: {len(bookmarks)} bookmark(s)[/dim]")
 
-    def display_error(self, message: str) -> None:
+    def display_error(self, *, message: str) -> None:
         """Display an error message.
 
         Args:
@@ -201,7 +201,7 @@ class WordFormatter:
         """
         self._console.print(f"[bold red]Error:[/bold red] {message}")
 
-    def display_success(self, message: str) -> None:
+    def display_success(self, *, message: str) -> None:
         """Display a success message.
 
         Args:
@@ -209,7 +209,7 @@ class WordFormatter:
         """
         self._console.print(f"[bold green]✓[/bold green] {message}")
 
-    def display_warning(self, message: str) -> None:
+    def display_warning(self, *, message: str) -> None:
         """Display a warning message.
 
         Args:
@@ -217,7 +217,7 @@ class WordFormatter:
         """
         self._console.print(f"[bold yellow]⚠[/bold yellow] {message}")
 
-    def display_info(self, message: str) -> None:
+    def display_info(self, *, message: str) -> None:
         """Display an info message.
 
         Args:

@@ -57,7 +57,7 @@ class DictionaryClient:
             )
         return self._client
 
-    def lookup(self, word: str) -> Word:
+    def lookup(self, *, word: str) -> Word:
         """Look up a word in the dictionary.
 
         Args:

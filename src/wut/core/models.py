@@ -15,7 +15,7 @@ class Phonetic:
     source_url: str | None = None
 
     @classmethod
-    def from_api_response(cls, data: Mapping[str, str | None]) -> Self:
+    def from_api_response(cls, *, data: Mapping[str, str | None]) -> Self:
         """Create Phonetic from API response dict."""
         return cls(
             text=data.get("text") or "",
@@ -34,7 +34,7 @@ class Definition:
     antonyms: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: Mapping[str, Any]) -> Self:
+    def from_api_response(cls, *, data: Mapping[str, Any]) -> Self:
         """Create Definition from API response dict."""
         return cls(
             text=data.get("definition", ""),
@@ -54,7 +54,7 @@ class Meaning:
     antonyms: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: Mapping[str, Any]) -> Self:
+    def from_api_response(cls, *, data: Mapping[str, Any]) -> Self:
         """Create Meaning from API response dict."""
         definitions = tuple(
             Definition.from_api_response(data=d) for d in data.get("definitions", [])
@@ -93,7 +93,7 @@ class Word:
     source_urls: tuple[str, ...] = field(default_factory=tuple)
 
     @classmethod
-    def from_api_response(cls, data: list[dict[str, Any]]) -> Self:
+    def from_api_response(cls, *, data: list[dict[str, Any]]) -> Self:
         """Create Word from API response (list of entries)."""
         if not data:
             raise ValueError("Empty API response")
@@ -176,7 +176,7 @@ class Bookmark:
     updated_at: datetime
 
     @classmethod
-    def from_word(cls, word: Word) -> Self:
+    def from_word(cls, *, word: Word) -> Self:
         """Create a Bookmark from a Word object."""
         # Get primary definition
         primary_meaning = word.meanings[0] if word.meanings else None
