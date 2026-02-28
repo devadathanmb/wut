@@ -1,14 +1,22 @@
 # Wut?
 
-Wut? is a command-line dictionary for quick word lookups, pronunciation, and bookmarks.
+Wut? is a command-line dictionary for quick lookups, pronunciation, and personal word bookmarks.
 
-> The name came from those moments while reading where you hit a word and think: "wut?"
+Originally built as my CS50P final project, this repo carries a lot of my early development memories.
+
+> The name came from those moments while reading where you hit a word and think, "wut?"
+
+## Why This Exists
+
+While reading articles, documentation, or even chats, you often run into words you half-know or do not know at all.
+
+Most of the time, the flow is the same: switch tabs, open a search engine or dictionary, type the word, then come back. Wut? exists to reduce that context switching. You stay in the terminal, get the meaning fast, hear pronunciation when needed, and bookmark words you want to revisit later.
 
 ## What It Does
 
-- Look up definitions, examples, synonyms, and antonyms
-- Play pronunciation for a word
-- Save and manage bookmarks locally
+- Looks up definitions, examples, synonyms, and antonyms
+- Plays pronunciation for words
+- Saves and manages bookmarks locally
 
 ## Installation
 
@@ -104,8 +112,6 @@ wut info
 This project uses [uv](https://docs.astral.sh/uv/) for dependency and environment management.
 
 1. Install prerequisites.
-- Python 3.11+
-- `uv`
 
 ```bash
 python --version
@@ -138,20 +144,15 @@ uv run wut hello
 uv run pytest tests/ -v
 ```
 
-6. Run lint checks.
+6. Run lint and type checks.
 
 ```bash
 uv run ruff check src/ tests/
-```
-
-7. Run type checks.
-
-```bash
 uv run mypy src/ tests/
 uv run --with pyright pyright
 ```
 
-8. Optional: activate `.venv` if you prefer direct commands.
+7. Optional: activate `.venv` if you prefer direct commands.
 
 ```bash
 source .venv/bin/activate
@@ -163,10 +164,10 @@ ruff check src/ tests/
 
 - [Free Dictionary API](https://dictionaryapi.dev/) for the dictionary data used by this project.
 
-## Known Limitations
-
-Dictionary results depend on the Free Dictionary API. If a word is missing there, or the service is temporarily down, Wut? will fail to fetch results.
-
 ## License
 
 GNU Affero General Public License v3.0 (AGPL-3.0)
+
+## Known Limitations
+
+Dictionary results depend on the Free Dictionary API. If a word is missing there, or the service is temporarily down, Wut? will fail to fetch results.
