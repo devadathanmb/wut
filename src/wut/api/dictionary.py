@@ -131,4 +131,4 @@ def lookup_word(word: str, *, timeout: float = DEFAULT_TIMEOUT) -> Word:
         Word object with definitions.
     """
     with DictionaryClient(timeout=timeout) as client:
-        return client.lookup(word)
+        return client.lookup(word=word)

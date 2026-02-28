@@ -294,31 +294,31 @@ class TestBookmarkManager:
 
     def test_add_word(self, manager: BookmarkManager, sample_word: Word) -> None:
         """Test adding a word to bookmarks."""
-        result = manager.add_word(sample_word)
+        result = manager.add_word(word=sample_word)
 
         assert result.word == "test"
         assert result.definition == "A procedure"
 
     def test_get(self, manager: BookmarkManager, sample_word: Word) -> None:
         """Test getting a bookmark."""
-        manager.add_word(sample_word)
+        manager.add_word(word=sample_word)
 
-        result = manager.get("test")
+        result = manager.get(word="test")
 
         assert result.word == "test"
 
     def test_exists(self, manager: BookmarkManager, sample_word: Word) -> None:
         """Test checking if word is bookmarked."""
-        assert not manager.exists("test")
+        assert not manager.exists(word="test")
 
-        manager.add_word(sample_word)
+        manager.add_word(word=sample_word)
 
-        assert manager.exists("test")
+        assert manager.exists(word="test")
 
     def test_context_manager(self, temp_db_path: Path, sample_word: Word) -> None:
         """Test manager as context manager."""
         with BookmarkManager(db_path=temp_db_path) as manager:
-            manager.add_word(sample_word)
-            assert manager.exists("test")
+            manager.add_word(word=sample_word)
+            assert manager.exists(word="test")
 
         temp_db_path.unlink(missing_ok=True)

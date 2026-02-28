@@ -70,7 +70,7 @@ pass_context = click.make_pass_decorator(Context, ensure=True)
 
 def handle_error(message: str, exit_code: int = 1) -> NoReturn:
     """Display error and exit."""
-    formatter.display_error(message)
+    formatter.display_error(message=message)
     sys.exit(exit_code)
 
 
