@@ -2,6 +2,7 @@
 
 import httpx
 
+from wut import __version__
 from wut.core.models import Word
 
 API_BASE_URL = "https://api.dictionaryapi.dev/api/v2/entries/en"
@@ -52,7 +53,7 @@ class DictionaryClient:
         if self._client is None:
             self._client = httpx.Client(
                 timeout=self._timeout,
-                headers={"User-Agent": "wut-dictionary-cli/1.0.0"},
+                headers={"User-Agent": f"wut-dictionary-cli/{__version__}"},
             )
         return self._client
 
