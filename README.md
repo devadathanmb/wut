@@ -8,6 +8,24 @@ Originally built as my [CS50P](https://pll.harvard.edu/course/cs50s-introduction
 
 https://github.com/user-attachments/assets/cd46c9b0-7d82-4541-9123-69d05b2b16e7
 
+## Table of Contents
+
+- [Wut? 🤔](#wut-)
+- [Why This Exists](#why-this-exists)
+- [What It Does](#what-it-does)
+- [Installation](#installation)
+  - [From PyPI (Recommended)](#from-pypi-recommended)
+  - [From Source](#from-source)
+- [Usage](#usage)
+  - [Quick Lookup](#quick-lookup)
+  - [Bookmarks](#bookmarks)
+  - [Pronunciation](#pronunciation)
+  - [Info](#info)
+- [Development](#development)
+- [Credits](#credits)
+- [License](#license)
+- [Known Limitations](#known-limitations)
+
 ## Why This Exists
 
 While reading articles, documentation, or even chats, you often run into words you half-know or do not know at all.
