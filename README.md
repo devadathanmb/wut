@@ -161,18 +161,25 @@ uv run wut hello
 5. Run tests.
 
 ```bash
-uv run pytest tests/ -v
+make test
 ```
 
 6. Run lint and type checks.
 
 ```bash
-uv run ruff check src/ tests/
-uv run mypy src/ tests/
-uv run --with pyright pyright
+make lint
+make typecheck
+make pyright
 ```
 
-7. Optional: activate `.venv` if you prefer direct commands.
+7. Run all default quality checks together.
+
+```bash
+make check
+make coverage
+```
+
+8. Optional: activate `.venv` if you prefer direct commands.
 
 ```bash
 source .venv/bin/activate

@@ -428,7 +428,7 @@ class TestPronounceCommand:
 
             callback = pronounce_command.callback
             assert callback is not None
-            cast_callback = callback.__wrapped__ if hasattr(callback, "__wrapped__") else callback
+            cast_callback = getattr(callback, "__wrapped__", callback)
             cast_callback = cast(Any, cast_callback)
             cast_callback(ctx, word="hello", slow=False)
 
