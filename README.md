@@ -145,47 +145,29 @@ git clone https://github.com/devadathanmb/wut.git
 cd wut
 ```
 
-3. Create the local dev environment and install dependencies.
+3. Set up the local dev environment.
 
 ```bash
-uv sync --extra dev
+make sync
 ```
 
-4. Run the CLI locally.
+4. Run the CLI locally with `uv`.
 
 ```bash
 uv run wut --help
 uv run wut hello
 ```
 
-5. Run tests.
+Common development commands:
 
-```bash
-make test
-```
-
-6. Run lint and type checks.
-
-```bash
-make lint
-make typecheck
-make pyright
-```
-
-7. Run all default quality checks together.
-
-```bash
-make check
-make coverage
-```
-
-8. Optional: activate `.venv` if you prefer direct commands.
-
-```bash
-source .venv/bin/activate
-pytest tests/ -v
-ruff check src/ tests/
-```
+- `make run`: Run the CLI help locally.
+- `make test`: Run the test suite.
+- `make lint`: Run Ruff lint checks.
+- `make typecheck`: Run mypy.
+- `make pyright`: Run pyright.
+- `make check`: Run lint + mypy + tests.
+- `make coverage`: Run tests with coverage and generate `coverage.xml`.
+- `make ci`: Run lint + mypy + pyright + tests.
 
 ## Credits
 
