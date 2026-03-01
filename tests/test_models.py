@@ -190,6 +190,46 @@ class TestWord:
         with pytest.raises(ValueError, match="Empty API response"):
             Word.from_api_response(data=[])
 
+    def test_skips_phonetics_without_text(self) -> None:
+        """Test that phonetics without text are ignored."""
+        word = Word.from_api_response(
+            data=[
+                {
+                    "word": "hello",
+                    "phonetics": [
+                        {"text": "", "audio": "https://example.com/empty.mp3"},
+                        {"audio": "https://example.com/missing-text.mp3"},
+                        {"text": "/həˈloʊ/"},
+                    ],
+                    "meanings": [],
+                    "sourceUrls": [],
+                }
+            ]
+        )
+
+        assert len(word.phonetics) == 1
+        assert word.ipa == "/həˈloʊ/"
+
+    def test_ipa_and_audio_url_none_when_unavailable(self) -> None:
+        """Test fallback to None when no IPA or audio is available."""
+        word = Word.from_api_response(
+            data=[
+                {
+                    "word": "plain",
+                    "phonetics": [{"text": "/plain/"}, {"text": "/plain2/"}],
+                    "meanings": [],
+                    "sourceUrls": [],
+                }
+            ]
+        )
+
+        assert word.audio_url is None
+
+        word_no_phonetics = Word.from_api_response(
+            data=[{"word": "none", "phonetics": [], "meanings": [], "sourceUrls": []}]
+        )
+        assert word_no_phonetics.ipa is None
+
 
 class TestBookmark:
     """Tests for Bookmark model."""

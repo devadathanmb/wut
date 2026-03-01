@@ -145,6 +145,43 @@ class TestDictionaryClient:
 
             client.close()
 
+    def test_lookup_generic_http_error(self) -> None:
+        """Test wrapping generic HTTP client errors."""
+        with patch.object(httpx.Client, "get") as mock_get:
+            mock_get.side_effect = httpx.HTTPError("request failed")
+
+            client = DictionaryClient()
+
+            with pytest.raises(DictionaryAPIError, match="HTTP error"):
+                client.lookup(word="hello")
+
+            client.close()
+
+    def test_lookup_parse_error(self) -> None:
+        """Test wrapping JSON parse failures."""
+        with patch.object(httpx.Client, "get") as mock_get:
+            mock_response = Mock()
+            mock_response.status_code = 200
+            mock_response.json.side_effect = ValueError("invalid json")
+            mock_get.return_value = mock_response
+
+            client = DictionaryClient()
+
+            with pytest.raises(DictionaryAPIError, match="Failed to parse API response"):
+                client.lookup(word="hello")
+
+            client.close()
+
+    def test_get_client_reuses_instance(self) -> None:
+        """Test HTTP client is initialized once and reused."""
+        client = DictionaryClient()
+
+        first = client._get_client()
+        second = client._get_client()
+
+        assert first is second
+        client.close()
+
     def test_context_manager(self, sample_api_response: list[dict[str, object]]) -> None:
         """Test client as context manager."""
         with patch.object(httpx.Client, "get") as mock_get:

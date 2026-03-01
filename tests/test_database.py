@@ -1,9 +1,11 @@
 """Tests for database and bookmark operations."""
 
+import sqlite3
 import tempfile
 from collections.abc import Generator
 from datetime import datetime
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -13,6 +15,7 @@ from wut.core.database import (
     BookmarkNotFoundError,
     BookmarkRepository,
     Database,
+    DatabaseError,
 )
 from wut.core.models import Bookmark, Word
 
@@ -80,6 +83,43 @@ class TestDatabase:
             version = cursor.fetchone()[0]
             assert version >= 1
 
+    def test_db_path_property(self, temp_db_path: Path) -> None:
+        """Test database path property."""
+        db = Database(db_path=temp_db_path)
+        assert db.db_path == temp_db_path
+
+    def test_default_path_generation(self) -> None:
+        """Test default path uses platform data directory."""
+        with patch("wut.core.database.user_data_dir", return_value="/tmp/wut-data"):
+            path = Database._get_default_path()
+
+        assert path == Path("/tmp/wut-data/bookmarks.db")
+
+    def test_initialize_schema_no_connection_noop(self, temp_db_path: Path) -> None:
+        """Schema initialization should no-op without an open connection."""
+        db = Database(db_path=temp_db_path)
+        db._initialize_schema()
+        db.close()
+
+    def test_connection_wraps_sqlite_error_and_rolls_back(self, temp_db_path: Path) -> None:
+        """Convert sqlite errors into DatabaseError and roll back transaction."""
+        db = Database(db_path=temp_db_path)
+        mock_conn = MagicMock()
+
+        with (
+            patch.object(db, "_get_connection", return_value=mock_conn),
+            pytest.raises(DatabaseError, match="Database error"),
+            db.connection(),
+        ):
+            raise sqlite3.OperationalError("boom")
+
+        mock_conn.rollback.assert_called_once()
+
+    def test_close_without_open_connection(self, temp_db_path: Path) -> None:
+        """Close should safely no-op before any connection is created."""
+        db = Database(db_path=temp_db_path)
+        db.close()
+
 
 class TestBookmarkRepository:
     """Tests for BookmarkRepository class."""
@@ -127,6 +167,23 @@ class TestBookmarkRepository:
             repository.get(word="nonexistent")
 
         assert exc_info.value.word == "nonexistent"
+
+    def test_get_by_id(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
+        """Test retrieving a bookmark by ID."""
+        added = repository.add(bookmark=sample_bookmark)
+        assert added.id is not None
+
+        result = repository.get_by_id(bookmark_id=added.id)
+
+        assert result.id == added.id
+        assert result.word == "hello"
+
+    def test_get_by_id_not_found_raises(self, repository: BookmarkRepository) -> None:
+        """Test that getting non-existent ID raises error."""
+        with pytest.raises(BookmarkNotFoundError) as exc_info:
+            repository.get_by_id(bookmark_id=99999)
+
+        assert "ID: 99999" in exc_info.value.word
 
     def test_exists(self, repository: BookmarkRepository, sample_bookmark: Bookmark) -> None:
         """Test checking if bookmark exists."""
@@ -322,3 +379,44 @@ class TestBookmarkManager:
             assert manager.exists(word="test")
 
         temp_db_path.unlink(missing_ok=True)
+
+    def test_add_bookmark(self, manager: BookmarkManager) -> None:
+        """Test adding a bookmark model directly."""
+        bookmark = Bookmark(
+            id=None,
+            word="manual",
+            definition="Added directly",
+            part_of_speech="adjective",
+            phonetic=None,
+            synonyms="",
+            antonyms="",
+            example=None,
+            added_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+
+        result = manager.add_bookmark(bookmark=bookmark)
+        assert result.id is not None
+        assert manager.exists(word="manual")
+
+    def test_proxy_methods(self, manager: BookmarkManager, sample_word: Word) -> None:
+        """Test list/search/delete/count/clear proxy behavior."""
+        manager.add_word(word=sample_word)
+
+        assert manager.count() == 1
+
+        listed = manager.list_all(limit=10, offset=0)
+        assert len(listed) == 1
+        assert listed[0].word == "test"
+
+        searched = manager.search(query="te", limit=10)
+        assert len(searched) == 1
+        assert searched[0].word == "test"
+
+        assert manager.delete(word="test") is True
+        assert manager.count() == 0
+
+        manager.add_word(word=sample_word)
+        deleted = manager.clear()
+        assert deleted == 1
+        assert manager.count() == 0

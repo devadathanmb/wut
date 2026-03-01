@@ -6,3 +6,5 @@ test.json
 __pycache__
 .venv
 dist/*
+.coverage
+coverage.xml
