@@ -1,6 +1,7 @@
 """Tests for CLI commands."""
 
 from datetime import datetime
+from typing import Any, cast
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -425,7 +426,11 @@ class TestPronounceCommand:
             mock_player = MagicMock()
             MockPlayer.return_value = mock_player
 
-            pronounce_command.callback.__wrapped__(ctx, word="hello", slow=False)
+            callback = pronounce_command.callback
+            assert callback is not None
+            cast_callback = callback.__wrapped__ if hasattr(callback, "__wrapped__") else callback
+            cast_callback = cast(Any, cast_callback)
+            cast_callback(ctx, word="hello", slow=False)
 
             assert mock_player.play.call_count == 2
             mock_player.close.assert_called_once()
