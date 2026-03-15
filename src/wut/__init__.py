@@ -1,4 +1,5 @@
 """Wut CLI - A modern command-line dictionary with pronunciation and bookmarking."""
 
-__version__ = "0.1.2"
-__author__ = "Devadathan M B"
+from importlib.metadata import version
+
+__version__ = version("wut-dictionary-cli")
