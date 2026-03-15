@@ -1,4 +1,4 @@
-.PHONY: sync run test coverage lint format format-check typecheck pyright check ci
+.PHONY: sync run test coverage lint format format-check typecheck pyright check ci release
 
 sync:
 	uv sync --extra dev
@@ -31,3 +31,11 @@ pyright:
 check: lint typecheck test
 
 ci: lint typecheck pyright test
+
+release:
+	@test -n "$(BUMP)" || (echo "Usage: make release BUMP=patch|minor|major" && exit 1)
+	uv version --bump $(BUMP)
+	git add pyproject.toml uv.lock
+	git commit -m "chore(release): bump version to $$(uv version --short)"
+	git tag "v$$(uv version --short)"
+	git push --follow-tags
