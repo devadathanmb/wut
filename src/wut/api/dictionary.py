@@ -1,5 +1,7 @@
 """Dictionary API client using the Free Dictionary API."""
 
+from typing import Self
+
 import httpx
 
 from wut import __version__
@@ -105,7 +107,7 @@ class DictionaryClient:
             self._client.close()
             self._client = None
 
-    def __enter__(self) -> "DictionaryClient":
+    def __enter__(self) -> Self:
         """Enter context manager."""
         return self
 

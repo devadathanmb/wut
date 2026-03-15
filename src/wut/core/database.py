@@ -5,6 +5,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
+from typing import Self
 
 from platformdirs import user_data_dir
 
@@ -116,7 +117,7 @@ class Database:
             self._connection.close()
             self._connection = None
 
-    def __enter__(self) -> "Database":
+    def __enter__(self) -> Self:
         """Enter context manager."""
         self._get_connection()
         return self

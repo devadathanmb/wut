@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Self
 
 from gtts import gTTS  # type: ignore[import-untyped]
 
@@ -176,7 +177,7 @@ class PronunciationPlayer:
         """Close player and release resources."""
         self.stop()
 
-    def __enter__(self) -> "PronunciationPlayer":
+    def __enter__(self) -> Self:
         """Enter context manager."""
         return self
 

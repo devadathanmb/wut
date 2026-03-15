@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Self
 
 
@@ -195,8 +195,8 @@ class Bookmark:
             synonyms=",".join(word.all_synonyms[:10]),  # Limit to 10
             antonyms=",".join(word.all_antonyms[:10]),
             example=primary_definition.example if primary_definition else None,
-            added_at=datetime.now(),
-            updated_at=datetime.now(),
+            added_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
     @property

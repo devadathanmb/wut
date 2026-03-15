@@ -1,6 +1,7 @@
 """Bookmark manager for high-level bookmark operations."""
 
 from pathlib import Path
+from typing import Self
 
 from wut.core.database import (
     BookmarkExistsError,
@@ -137,7 +138,7 @@ class BookmarkManager:
         """Close database connection."""
         self._db.close()
 
-    def __enter__(self) -> "BookmarkManager":
+    def __enter__(self) -> Self:
         """Enter context manager."""
         return self
 
